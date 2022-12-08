@@ -12,11 +12,13 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # 1. Introduction 
 
-Inferences and predictions on large spatial data or data with locations $\approx 10^6$ have either been too computationally challenging or infeasible. Methods for large spatial data that are under active development. However, most of the existing methods has focused primarily on theoretical and methodological developments. These methods have paid little attention on the algorithmic details and have not made use of high-performance computing (HPC) libraries to expedite expensive computations and delivery full Bayesian inference for large spatial data. On the other hand, while the (latent) NNGP (nearest neighbor Gaussian process) model (Datta et al., 2016) appears promising, this model is prone to high autocorrelations and slow convergence because the "sequential" Gibbs sampler involves updating a high-dimensional vector of latent random effect. 
+Inferences and predictions on large spatial data or data with locations $\approx 10^6$ have either been too computationally challenging or infeasible. Methods for large spatial data that are under active development. However, most of the existing methods has focused primarily on theoretical and methodological developments. These methods have paid little attention on the algorithmic details and have not made use of high-performance computing (HPC) libraries to expedite expensive computations and delivery full Bayesian inference for large spatial data. 
 
-Three alternate formulations of the NNGP models that are more efficient and practical than that of Datta et al.'s (2016) are proposed: (1) the collapsed NNGP model, (2) the response NNGP model, and (3) the conjugate NNGP model, and these models can be accessed through the `R` package `spNNGP` (Finley et al., 2021). 
+On the other hand, while the original NNGP (nearest neighbor Gaussian process) model (Datta et al., 2016) appears promising, this model is prone to high autocorrelations and slow convergence because the "sequential" Gibbs sampler involves updating a high-dimensional vector of latent random effect. The original NNPG model by Datta et al. (2016) is refereed to as the latent NNGP model. 
 
-Section 2 introduces the NNGP (nearest neighbor Gaussian process) models, which is followed by three alternate formulations: (1) a collapsed NNGP model, (2) a NNGP model for the response (with no latent process), and (3) a conjugate NNGP model that allows for MCMC-free inference. Section 3. ... Section 4 includes the discussion. ... are included in the Appendix. 
+Three alternate formulations of the NNGP model that are more efficient and practical than the latent NNGP model (2016) are proposed: (1) the collapsed NNGP model, (2) the response NNGP model, and (3) the conjugate NNGP model, and these models are accessible through the `R` package `spNNGP` (Finley et al., 2021). 
+
+Section 2 reviews GPs (Gaussian processes) and introduces the latent NNGP model, which is followed by three alternate formulations of the latent NNGP model: (1) a collapsed NNGP model, (2) a NNGP model for the response (with no latent process), and (3) a conjugate NNGP model that allows for MCMC-free inference. Section 3. ... Section 4 includes the discussion. ... are included in the Appendix. 
 
 # 2. Nearest Neighbor Gaussian Processes
 
@@ -28,7 +30,7 @@ y(s_i) = {x(s_i)}^T \beta + w(s_i) + \epsilon(s_i),
 $$
 where $y(s_i)$ denotes the response, $x(s_i)$ denotes the known or observed covariates, $\beta$ is the vector of coefficients, $w(s_i)$ is the vector of unknown or unobserved covariates, and $\epsilon(s_i) \sim^{iid} N(0, \tau^2)$ is the random noise. 
 
-Gaussian processes (GPs) are widely used in machine learning to model smooth functions for regression, classification and other tasks (Rasmussen 2003, as cited in Finley et al., 2021). In spatial statistics, GPs are typically used to model the latent surface $w(s)$. A GP model for the spatial surface 
+Gaussian processes (GPs) are widely used in machine learning to model smooth functions for regression, classification, and other tasks (Rasmussen 2003, as cited in Finley et al., 2021). In spatial statistics, GPs are commonly used to model the latent surface $w(s)$. A GP model for the spatial surface 
 $$
 w(s) \sim GP(0, C(\cdot, \cdot | \theta)), 
 $$
@@ -46,16 +48,17 @@ p(\beta, \theta, \tau^2) \times N(w | 0, C(\theta)) \times N(y | X \beta + w, \t
 $$
 where $p(\beta, \theta, \tau^2)$ is specified by assigning priors to $\beta, \theta$ and $\tau^2$. 
 
-Alternatively, the marginal model can be constricted by integrating $w$ out from (2) 
+Alternatively, the marginal model can be constricted by integrating $w$ out from (2) and is given as 
 $$
 N(y | X \beta, C(\theta) + \tau^2 I).
 $$
 
-......
+...... (Finley et al., 2021). 
 
-## Nearest Neighbor GPs for spatial data 
 
-When $n$ is large, evaluating (2) is computationally challenging or infeasible. 
+## NNGPs for spatial data 
+
+When $n$ is large, evaluating (2) can be computationally challenging or infeasible. More specifically, evaluating $N(w | 0, C)$ requires $\mathcal{O}(n^3)$ computations and storing the matrix $C$ requires $\mathcal{O}(n^2)$ storage. In addition, predicting the response at new locations $K$ requires additional $\mathcal{O}(kn^2)$ operations. Unfortunately, integrating $w$ out from (2) does not always give computational advantages either. 
 
 The underlying idea of the NNGP models is similar to that of the graphical models. More specifically, the joint distribution for a random vector $w$ can be viewed as a directed acyclic graph (DAG). That is, $p(w) = p(w_1, w_2, ... w_n)$ can be written as 
 $$
@@ -118,9 +121,11 @@ However, the Cholesky factorization for the full GP covariance $C$ does not offe
 
 To construct a sparse precision matrix, start with a dense $nxn$ covariance matrix $C$ and construct a sparse strictly lower-triangular matrix $A$ with no more than $m(\ll n)$ nonzero entries in each row and the diagonal matrix $D$, then the matrix $\tilde{C} = {(I - A)}^{-1} D {(I - A)}^{-T}$ is a covariance matrix and its inverse ${\tilde{C}}^{-1} = {(I - A)}^{T} D^{-1} {(I - A)}^{}$ is sparse. This leads to the latent NNGP model in the section below. 
 
+NNGP can also be viewed as (Finley et al., 2021).
+
 ## 2.0. Latent NNGP 
 
-The original NNGP model proposed by Datta et al. (2016) constructed the neighbor sets based on $m$ nearest neighbors and replaced the GP (Gaussian Process) prior for spatial random effects $w$ in (2) with a Nearest Neighbor Gaussian Process (NNGP) prior 
+The original NNGP model proposed by Datta et al. (2016) constructed the neighbor sets based on $m$ nearest neighbors and replaced the GP prior for spatial random effects $w$ in (2) with a NNGP prior 
 $$
 w \sim N(0, \tilde{C}(\theta)).
 $$
@@ -139,7 +144,9 @@ The MCMC implementation of the latent NNGP involves updating the $n$ latent spat
 
 ## 2.1. Collapsed NNGP
 
-A collapsed NNGP model (1) enjoys the frugality of a low-dimensional MCMC chain but also (2) allows for full recovery of the latent random effects $w$. 
+The collapsed NNGP model...... 
+
+A collapsed NNGP model not only enjoys the frugality of a low-dimensional MCMC chain but also allows for full recovery of the latent random effects $w$. 
 
 Consider the two-stage hierarchical specification 
 $$
@@ -149,18 +156,18 @@ and integrate out $w$ to avoid sampling $w$ in the Gibb's sampler, then the coll
 $$
 y \sim N(X \beta, \Lambda = \tilde{C} + \tau^2 I),  \tag{3}
 $$
-where $\tilde{C} = \tilde{C}(\theta)$, where again $\theta = \{ \sigma^2, \phi, \nu \}$ for Matérn covariance function. 
+where $\tilde{C} = \tilde{C}(\theta)$ and $\theta = \{ \sigma^2, \phi, \nu \}$ for Matérn covariance function. 
 
 A normal prior $N(\mu_{\beta}, V_{\beta})$ is used for $\beta$, inverse-Gamma priors are used for the spatial and noise variances $\sigma^2$ and $\tau^2$, and uniform priors are used for the range and smoothness parameters $1/\phi$ and $\nu$. 
+
+Explain Algorithm 1 in words here.
 
 
 ## 2.2. NNGP for the Response
 
-Both the latent NNGP (sequential NNGP) and the collapsed version of it the collapsed NNGP make predication at a new location by (1) first recovering the spatial random effects $w$, and (2) predicting value at the new location with kriging. 
+Both the latent NNGP (sequential NNGP) and the collapsed version of it the collapsed NNGP make predication at a new location by first recovering the spatial random effects $w$ and predicting value at the new location with kriging. However, if inference on the latent process is of interest, the recovery of $w$ is necessary. Otherwise, it is often a computational burden. ......
 
-However, the recovery of $w$ is necessary if inference on the latent process is of interest. Otherwise, it becomes a computational burden. ......
-
-......
+The response NNGP model...... 
 
 Consider the marginal Gaussian process for the response
 $$
@@ -176,6 +183,27 @@ where $\tilde{\Sigma}$ is the NNGP covariance matrix derived from $\Sigma = C(\t
 
 
 ## 2.3. MCMC-Free Exact Bayesian Inference Using Conjugate NNGP 
+
+...... MCMC methods are used to obtain approximate inference. ...... However, running MCMC methods such as the Gibbs’ sampler for several thousand iterations may still be very slow. 
+
+The conjugate NNGP model...... 
+
+Consider the marginal model from Section 2.2 
+$$
+Y \sim N(X \beta, {\Sigma})
+$$
+and define $\alpha$ as $\alpha = \tau^2 / \sigma^2$, then the MCMC-free marginal model can be rewritten as 
+$$
+Y \sim N(X \beta, \sigma^2 {M}), \tag{5}
+$$
+where ${M} = G + \alpha I$ and $G$ is the Matérn correlation matrix corresponding to the covariance matrix $C$, that is, $G[i,j] = C(s_i, s_j, {(1, \nu, \phi)}^T)$.
+
+Replace $M$ with $\tilde{M}$, then the analogous NNGP model is specified as 
+$$
+Y \sim N(X \beta, \sigma^2 \tilde{M}),
+$$
+where $\tilde{M} = \tilde{M}(\alpha, \phi)$ depends on $\alpha$, the spatial range $\phi$, and smoothness parameter $\nu$. 
+
 
 # 3. Applications to Spatial data
 
