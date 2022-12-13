@@ -12,63 +12,78 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # 1. Introduction 
 
-Inferences and predictions on large spatial data or data with locations $\approx 10^6$ have either been too computationally challenging or infeasible. Methods for large spatial data that are under active development. However, most of the existing methods has focused primarily on theoretical and methodological developments. These methods have paid little attention on the algorithmic details and have not made use of high-performance computing (HPC) libraries to expedite expensive computations and delivery full Bayesian inference for large spatial data. 
+Inferences and predictions on large spatial data or data with locations $\approx 10^6$ have either been too computationally challenging or infeasible. Methods for large spatial data that are under active development. However, most of the existing methods has focused primarily on theoretical and methodological developments. These methods have not paid enough attention on the algorithmic details nor made use of high-performance computing (HPC) libraries to expedite expensive computations and delivery full Bayesian inference for large spatial data. 
 
-On the other hand, while the original NNGP (nearest neighbor Gaussian process) model (Datta et al., 2016) appears promising, this model is prone to high autocorrelations and slow convergence because the "sequential" Gibbs sampler involves updating a high-dimensional vector of latent random effect. The original NNPG model by Datta et al. (2016) is refereed to as the latent NNGP model. 
+On the other hand, while the original NNGP (nearest neighbor Gaussian process) model (Datta et al., 2016), which is also referred to as the latent NNGP model, appears promising, the latent NNGP model is prone to high autocorrelations and slow convergence because the Gibbs sampler involves updating a high-dimensional vector of latent random effect *sequentially*. 
 
 Three alternate formulations of the NNGP model that are more efficient and practical than the latent NNGP model (2016) are proposed: (1) the collapsed NNGP model, (2) the response NNGP model, and (3) the conjugate NNGP model, and these models are accessible through the `R` package `spNNGP` (Finley et al., 2021). 
 
-Section 2 reviews GPs (Gaussian processes) and introduces the latent NNGP model, which is followed by three alternate formulations of the latent NNGP model: (1) a collapsed NNGP model, (2) a NNGP model for the response (with no latent process), and (3) a conjugate NNGP model that allows for MCMC-free inference. Section 3. ... Section 4 includes the discussion. ... are included in the Appendix. 
+Section 2 reviews Gaussian processes (GPs) and introduces the latent NNGP model, which is followed by three alternate formulations of the latent NNGP model: (1) a collapsed NNGP model, (2) a NNGP model for the response (with no latent process), and (3) a conjugate NNGP model that allows for MCMC-free exact inference. Section 3. ...... Section 4 includes the discussion. ...... are included in the Appendix. 
 
 # 2. Nearest Neighbor Gaussian Processes
 
 ## Review of GPs for spatial data
 
-A spatial linear mixed effects model is given as 
+Let $(s_i, y(s_i), x(s_i))$ be a triplet, where $s_i$ denotes the location of measurement, $y(s_i)$ denotes the response of interest and $x(s_i)$ denotes the known or observed covariates, for $i = 1,..., n$, a spatial linear mixed effects model is given as 
 $$
-y(s_i) = {x(s_i)}^T \beta + w(s_i) + \epsilon(s_i), 
+y(s_i) = {x(s_i)}^T \beta + w(s_i) + \epsilon(s_i), \tag{1}
 $$
-where $y(s_i)$ denotes the response, $x(s_i)$ denotes the known or observed covariates, $\beta$ is the vector of coefficients, $w(s_i)$ is the vector of unknown or unobserved covariates, and $\epsilon(s_i) \sim^{iid} N(0, \tau^2)$ is the random noise. 
+where $\beta$ is the vector of coefficients, $w(s_i)$ is the vector of unknown or unobserved covariates or random effects, and $\epsilon(s_i) \sim^{iid} N(0, \tau^2)$ is the random noise. 
 
-Gaussian processes (GPs) are widely used in machine learning to model smooth functions for regression, classification, and other tasks (Rasmussen 2003, as cited in Finley et al., 2021). In spatial statistics, GPs are commonly used to model the latent surface $w(s)$. A GP model for the spatial surface 
+Gaussian processes (GPs) are widely used in machine learning to model smooth functions for regression, classification, and other tasks (Rasmussen 2003, as cited in Finley et al., 2021). In spatial statistics, GPs are typically used to model the latent surface $\{w(s)\}$. A GP model for the spatial surface, which is given as 
 $$
 w(s) \sim GP(0, C(\cdot, \cdot | \theta)), 
 $$
-where $C(\cdot, \cdot | \theta)$ is a covariance function, implies that $w = {(w(s_1),..., w(s_n))}^T$ follows a multivariate Gaussian distribution with mean zero and covariance matrix $C(\theta) = C = (c_{ij})$, where $c_{ij} = C(s_i, s_j | \theta)$ and $\theta$ is the covariance parameters of the GP. 
+where $C(\cdot, \cdot | \theta)$ is a covariance function, implies that the vector of random effects $w = {(w(s_1),..., w(s_n))}^T$ follows a multivariate Gaussian distribution with mean zero and covariance matrix $C(\theta) = C = (c_{ij})$, where $c_{ij} = C(s_i, s_j | \theta)$ and $\theta$ is the covariance parameters of the GP. 
 
-A popular choice of $\theta$ for $C(\cdot, \cdot | \theta)$ is selected from the Matérn covariance function. Let $s_i$ and $s_j$ be two points in $\mathcal{D}$, then the Matérn covariance function is specified as 
+A popular choice of $\theta$ for $C(\cdot, \cdot | \theta)$ is selected from the Matérn covariance function or Matérn kernel (Matérn, 1960). For example, let $s_i$ and $s_j$ be two points in $\mathcal{D}$, then the Matérn covariance function is specified as 
 $$
 C(s_i, s_j; \sigma^2, \phi, \nu) = \frac{\sigma^2} {2^{\nu - 1} \Gamma(\nu)} {(||s_i - s_j|| \phi)}^{\nu} \mathcal{K}_\nu {(||s_i - s_j|| \phi)}, \ \ \ \ \phi > 0, \nu > 0, 
 $$
 where $\theta = \{ \sigma^2, \phi, \nu \}$ are respectively the marginal variance, scale (inverse of range) and smoothness parameters, $\Gamma$ is the gamma function, $||\cdot||$ denotes the Euclidean distance in $\mathbb{R}^d$, and $\mathcal{K}$ is the Bessel function of second kind. 
 
-Customary Bayesian hierarchical models are constructed as 
+The hierarchical model can be constructed by combining the mixed effect model for the response $y$ and the GP model for the random effects $w$ and is given as 
 $$
 p(\beta, \theta, \tau^2) \times N(w | 0, C(\theta)) \times N(y | X \beta + w, \tau^2 I), \tag{2}
 $$
-where $p(\beta, \theta, \tau^2)$ is specified by assigning priors to $\beta, \theta$ and $\tau^2$. 
-
-Alternatively, the marginal model can be constricted by integrating $w$ out from (2) and is given as 
+where $p(\beta, \theta, \tau^2)$ is specified by assigning priors to $\beta, \theta$ and $\tau^2$. Alternatively, the marginal model can be constructed by integrating $w$ out from (2) and is given as 
 $$
-N(y | X \beta, C(\theta) + \tau^2 I).
+N(y | X \beta, \Sigma = C(\theta) + \tau^2 I).  \tag{3}
 $$
 
-...... (Finley et al., 2021). 
+In a frequentist paradigm, parameter estimation can be obtained from (3) via MLE (maximum likelihood estimation), whereas in a Bayesian framework, after assigning priors to the parameters, posterior inference can be obtained from either of the hierarchical model (2) or marginal model (3) model using MCMC (Markov chain Monte Carlo; Finley et al., 2021). 
+
+Alternatively, (2) is the same as 
+$$
+(\beta, \tau^2, \theta) \sim p(\beta, \tau^2, \theta) 
+$$
+$$
+w | \theta \sim N(0, C(\theta)) 
+$$
+$$
+y | \beta, w, \tau^2 \sim N(X\beta + w, \tau^2I).
+$$
 
 
 ## NNGPs for spatial data 
 
-When $n$ is large, evaluating (2) can be computationally challenging or infeasible. More specifically, evaluating $N(w | 0, C)$ requires $\mathcal{O}(n^3)$ computations and storing the matrix $C$ requires $\mathcal{O}(n^2)$ storage. In addition, predicting the response at new locations $K$ requires additional $\mathcal{O}(kn^2)$ operations. Unfortunately, integrating $w$ out from (2) does not always give computational advantages either. 
+When $n$ is large, evaluating both (2) an (3) can be computationally challenging or infeasible. More specifically, evaluating $N(w | 0, C)$ requires $\mathcal{O}(n^3)$ computations and storing the matrix $C$ requires $\mathcal{O}(n^2)$ storage. In addition, predicting the response at new locations $K$ requires additional $\mathcal{O}(kn^2)$ operations. Unfortunately, integrating $w$ out from (2) does not always give computational advantages either. 
 
-The underlying idea of the NNGP models is similar to that of the graphical models. More specifically, the joint distribution for a random vector $w$ can be viewed as a directed acyclic graph (DAG). That is, $p(w) = p(w_1, w_2, ... w_n)$ can be written as 
+One of the solutions is to replace GP prior for the spatial random effects $w$ with a NNGP prior (Datta et al., 2016, as cited in Finley et al., 2021). 
+
+- Include Finley et al., 2021
+
+- Move Finley et al., 2019 after "That is" 
+
+That is, the underlying idea of the NNGP models is similar to that of the graphical models. More specifically, the joint distribution for a random vector $w$ can be viewed as a directed acyclic graph (DAG). More specifically, $p(w) = p(w_1, w_2, ... w_n)$ can be written as 
 $$
-p(w) = p(w_1) \prod_{i = 2}^n p(w_i | Pa[i]), \tag{A1}
+p(w) = p(w_1) \prod_{i = 2}^n p(w_i | Pa[i]), \tag{4-1}
 $$
 where $w_i \equiv w(s_i)$ and $Pa[i] = \{w_1, w_2,... w_{i-1}\}$ is a set of parents of $w_i$, 
 
 or, more explicitly, as 
 $$
-p(w) = p(w_1) p(w_2 |w_1) p(w_3 |w_1, w_2) \cdots p(w_n |w_1, w_2,... w_{i-1}) \tag{A2} 
+p(w) = p(w_1) p(w_2 |w_1) p(w_3 |w_1, w_2) \cdots p(w_n |w_1, w_2,... w_{i-1}) \tag{4-2} 
 $$
 (Datta et al., 2017). Sparse models for $w$ can be constructed by shrinking the size of $Pa[i]$. ......
 
@@ -80,7 +95,7 @@ $$
 w_2 = a_{21}w_1 + \eta_2, 
 $$
 $$
-w_i = a_{i1}w_1 + a_{i2}w_2 + \cdots + a_{i,i-1}w_{i-1} + \eta_i, \ \text{for} \ i = 2,...,n, \tag{A3}
+w_i = a_{i1}w_1 + a_{i2}w_2 + \cdots + a_{i,i-1}w_{i-1} + \eta_i, \ \text{for} \ i = 2,...,n, \tag{4-3}
 $$
 
 or, more explicitly, as 
@@ -113,7 +128,7 @@ $$
 
 or, more compactly, as 
 $$
-w = A w + \eta, \tag{A5}
+w = A w + \eta, \tag{4-5}
 $$
 where $A$ is $nxn$ strictly lower-triangular and $\eta \sim N(0, D)$ with $D = (d_1, d_2,..., d_n)$ is diagonal. It follows that $I - A$ is nonsingular and, by the Cholesky factorization (Cholesky decomposition), a covariance matrix $C$ can be factorized into a product $C = {(I - A)}^{-1} D {(I - A)}^{-T}$, where for any matrix $M$, ${M}^{-T}$ refers to the inverse of its transpose. 
 
@@ -127,20 +142,34 @@ NNGP can also be viewed as (Finley et al., 2021).
 
 The original NNGP model proposed by Datta et al. (2016) constructed the neighbor sets based on $m$ nearest neighbors and replaced the GP prior for spatial random effects $w$ in (2) with a NNGP prior 
 $$
-w \sim N(0, \tilde{C}(\theta)).
+w \sim N(0, \tilde{C}(\theta)). \tag{6}
 $$
 This model is referred to as the latent NNGP, which uses a fully Bayesian hierarchical specification 
 $$
-p(\beta, \theta, \tau^2) \times N(w | 0, \tilde{C}(\theta)) \times N(y | X \beta + w, \tau^2 I), \tag{2*}
+p(\beta, \theta, \tau^2) \times N(w | 0, \tilde{C}(\theta)) \times N(y | X \beta + w, \tau^2 I), \tag{7}
 $$
-for running an MCMC (Markov chain Monte Carlo) algorithm (Finley et al., 2021). 
+for running an MCMC (Markov chain Monte Carlo) algorithm, and the parameters $\{w, \beta, \theta, \tau^2\}$ are updated in a Gibb's sampler (Finley et al., 2021). 
 
 Normal priors for $\beta$ and inverse Gamma priors for the variance components $\tau^2$ ensure that they yield conjugate full conditionals in the Gibbs sampler (Finley et al., 2021). The remaining covariance parameters $\theta$ are updated using random-walk Metropolis steps for their respective full conditionals (Finley et al., 2021). 
 
-The full conditional distribution for $w$ in (2*) is...... However, this block update of $w$ is not practical (Finley et al., 2021). 
+The full conditional distribution for $w$ in (7) is
+$$
+w | \cdot \sim(B(y - X\beta) / \tau^2, B), 
+$$
+where $B = \tilde{C}^{-1}(\theta) + I/\tau^2$. However, this block update of $w$ is not practical (Finley et al., 2021). ......
 
-The MCMC implementation of the latent NNGP involves updating the $n$ latent spatial effects $w$ sequentially. While......, the high-dimensional MCMC model......
+Instead, the MCMC implementation of the latent NNGP involves updating the $n$ full conditions $w_i | \cdot$ sequentially (Finley et al., 2021). While......, the high-dimensional MCMC model......
 
+Alternatively, (7) is the same as 
+$$
+(\beta, \tau^2, \theta) \sim p(\beta, \tau^2, \theta)
+$$
+$$
+w | \theta \sim N(0, \tilde{C}(\theta)) 
+$$
+$$
+y | \beta, w, \tau^2 \sim N(X\beta + w, \tau^2I). 
+$$
 
 ## 2.1. Collapsed NNGP
 
@@ -150,13 +179,13 @@ A collapsed NNGP model not only enjoys the frugality of a low-dimensional MCMC c
 
 Consider the two-stage hierarchical specification 
 $$
-N(w | 0, \tilde{C}) \times N(y | X \beta + w, \tau^2 I)
+N(w | 0, \tilde{C}(\theta)) \times N(y | X \beta + w, \tau^2 I)
 $$
 and integrate out $w$ to avoid sampling $w$ in the Gibb's sampler, then the collapsed NNGP model is specified as 
 $$
-y \sim N(X \beta, \Lambda = \tilde{C} + \tau^2 I),  \tag{3}
+y \sim N(X \beta, \Sigma = \tilde{C}(\theta) + \tau^2 I),  \tag{7*}
 $$
-where $\tilde{C} = \tilde{C}(\theta)$ and $\theta = \{ \sigma^2, \phi, \nu \}$ for Matérn covariance function. 
+where $\theta = \{ \sigma^2, \phi, \nu \}$ for Matérn covariance function. 
 
 A normal prior $N(\mu_{\beta}, V_{\beta})$ is used for $\beta$, inverse-Gamma priors are used for the spatial and noise variances $\sigma^2$ and $\tau^2$, and uniform priors are used for the range and smoothness parameters $1/\phi$ and $\nu$. 
 
@@ -165,9 +194,9 @@ Explain Algorithm 1 in words here.
 
 ## 2.2. NNGP for the Response
 
-Both the latent NNGP (sequential NNGP) and the collapsed version of it the collapsed NNGP make predication at a new location by first recovering the spatial random effects $w$ and predicting value at the new location with kriging. However, if inference on the latent process is of interest, the recovery of $w$ is necessary. Otherwise, it is often a computational burden. ......
+Both the latent NNGP (sequential NNGP) and the collapsed NNGP model (the collapsed version of the latent NNGP model) make predication at a new location by first recovering the spatial random effects $w$ and predicting value at the new location with kriging. However, if inference on the latent process is of interest, the recovery of $w$ is necessary. Otherwise, it is often a computational burden. ......
 
-The response NNGP model...... 
+Instead of using NNGP for the latent Gaussian process $w$, the response NNGP model applies the marginal Gaussian process for the response (Finley et al., 2019, as cited in Finley et al., 2021). 
 
 Consider the marginal Gaussian process for the response
 $$
@@ -175,18 +204,19 @@ $$
 $$
 where $\Sigma$ is the marginalized covariance function $\Sigma$ and is specified as $\Sigma(s_i, s_j) = C(s_i, s_j | \theta) + \tau^2 \delta(s_i, s_j),$ where $\delta$ is the Kronecker delta (Finley et al., 2021). 
 
-Since the covariance function of an NNGP can be derived from any parent GP, next replace the full GP covariance $\Sigma$ with its NNGP analogue $\tilde{\Sigma}$, then the response NNGP marginal model is specified as 
+Since the covariance function of an NNGP can be derived from any parent GP, next replace the full GP covariance $\Sigma$ with its NNGP analogue $\tilde{\Sigma}$, then the response NNGP marginal model is given as 
 $$
-Y \sim N(X \beta, \tilde{\Sigma}), \tag{4}
+Y \sim N(X \beta, \tilde{\Sigma}), \tag{8}
 $$
 where $\tilde{\Sigma}$ is the NNGP covariance matrix derived from $\Sigma = C(\theta) + \tau^2 I.$ (Finley et al., 2021). The sparsity in Section 2 can be applied to $\tilde{\Sigma}^{-1}$. 
 
+The dimension of the parameter space is reduced from $\mathcal{O}(n)$ to $\mathcal{O}(1)$, and the lower dimensional NNGP tends to have improved MCMC convergence (Finley et al., 2019, as cited in Finely et al., 2021). 
 
 ## 2.3. MCMC-Free Exact Bayesian Inference Using Conjugate NNGP 
 
 ...... MCMC methods are used to obtain approximate inference. ...... However, running MCMC methods such as the Gibbs’ sampler for several thousand iterations may still be very slow. 
 
-The conjugate NNGP model...... 
+The conjugate NNGP model offers exact (MCMC-free) posterior inference by fixing certain covariance parameters in the response NNGP model (Finley et al., 2021). 
 
 Consider the marginal model from Section 2.2 
 $$
@@ -194,17 +224,63 @@ Y \sim N(X \beta, {\Sigma})
 $$
 and define $\alpha$ as $\alpha = \tau^2 / \sigma^2$, then the MCMC-free marginal model can be rewritten as 
 $$
-Y \sim N(X \beta, \sigma^2 {M}), \tag{5}
+Y \sim N(X \beta, \sigma^2 {M}), 
 $$
 where ${M} = G + \alpha I$ and $G$ is the Matérn correlation matrix corresponding to the covariance matrix $C$, that is, $G[i,j] = C(s_i, s_j, {(1, \nu, \phi)}^T)$.
 
 Replace $M$ with $\tilde{M}$, then the analogous NNGP model is specified as 
 $$
-Y \sim N(X \beta, \sigma^2 \tilde{M}),
+Y \sim N(X \beta, \sigma^2 \tilde{M}), \tag{9}
 $$
-where $\tilde{M} = \tilde{M}(\alpha, \phi)$ depends on $\alpha$, the spatial range $\phi$, and smoothness parameter $\nu$. 
+where $\tilde{M} = \tilde{M}(\alpha, \phi)$ depends on $\alpha$, the spatial range $\phi$, and smoothness parameter $\nu$. That is, recall that $\Sigma$ of the marginal model in Section 2.2 is given as 
+$$
+\Sigma = \Sigma(s_i, s_j) = C(s_i, s_j | \theta) + \tau^2 \delta(s_i, s_j), 
+$$
+express the covariance function $C(\cdot, \cdot| \theta)$ as $\sigma^2 R(\cdot, \cdot | \phi)$, where $\sigma^2$ is the marginal variance and $R$ is the correlation function parameterized by $\phi$, i.e., $\theta = \{ \sigma^2, \phi \}$, and rewrite $\tau^2 = \alpha \sigma^2$, then 
+$$
+\Sigma = \Sigma(s_i, s_j) = \sigma^2 R(s_i, s_j | \phi) + \alpha \sigma^2 \delta(s_i, s_j)
+$$
+$$
+= \sigma^2 (R(s_i, s_j | \phi) + \alpha \delta(s_i, s_j)).
+$$
 
+This implies that the MCMC-free conjugate NNGP marginal model is 
+$$
+Y \sim N(X \beta, \sigma^2 \tilde{M}), \tag{9}
+$$
+where $\tilde{M} = \tilde{M}(\phi, \alpha)$ is a known covariance matrix once $\phi$ and $\alpha$ are fixed (Finley et al., 2021). The fixed values of $\phi$ and $\alpha$ are either chosen based on a variogram or can be selected more formally using K-fold cross-validation on hold-out data (Finley et al., 2021). This leaves $\beta$ and $\sigma^2$ the only unknown parameters (Finley et al., 2021). 
 
+Normal-Inverse-Gamma prior for $(\beta, \sigma^2)$ leads to conjugate Normal-Inverse-Gamma posterior distributions, and other summary quantities of $\beta$ and $\sigma^2$ can easily and exactly be obtained (Finley et al., 2021). That is, for fixed $\phi$ and $\alpha$, the conjugate Bayesian linear regression model can be constructed as 
+$$
+IG(\sigma^2 | a_\sigma, b_\sigma) \times N(\beta | \mu_\beta, \sigma^2 V_\beta) \times N(y | X \beta, \sigma^2 \tilde{M})
+$$
+with joint posterior distribution 
+$$
+p(\beta, \sigma^2 | y) \propto IG(\sigma^2 | a_\sigma^*, b_\sigma^*) \times N(\beta | B^{-1}b, \sigma^2 B^{-1}) 
+$$
+$$
+= p(\sigma^2 | y) \times p(\beta | \sigma^2, y), 
+$$
+where 
+$$
+a_\sigma^* = a_\sigma + n/2, \ \  b_\sigma^* = b_\sigma + \frac{1} {2} (\mu_\beta^T V_\beta^{-1} \mu_\beta + y^T \tilde{M} y - b^T B^{-1} b)
+$$
+and 
+$$
+B = V_\beta^{-1} + X^T \tilde{M}^{-1} X, \ \ b = V_\beta^{-1} \mu_\beta + X^T \tilde{M}^{-1} y.   
+$$
+
+Marginal posterior distributions for $\beta$ and $\sigma^2$ are respectively 
+$$
+\beta | y \sim MVS_{t_{2a_\sigma^*}} (B^{-1} b, \frac{b_\sigma^*} {a_\sigma^*} B^{-1})
+$$
+and 
+$$
+\sigma^2 | y \sim IG (a_\sigma^*, b_\sigma^*), 
+$$
+where $MVS_{t_{\kappa}} (B^{-1} b, (b / a) B^{-1})$ denotes the multivariate noncentral Student's $t$ distribution with degrees of freedom $\kappa$, mean $B^{-1} b$ and variance $b B^{-1} / (a - 1)$. The marginal posterior mean and variance for $\sigma^2$ are $b_\sigma^* / (a_\sigma^* - 1)$ and $b_\sigma^{2*} / {(a_\sigma^* - 1)}^2 (a_\sigma^* - 2)$, respectively. 
+
+ 
 # 3. Applications to Spatial data
 
 ## 3.1. Simulated data 
