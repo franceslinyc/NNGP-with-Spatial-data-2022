@@ -22,27 +22,25 @@ Section 2 reviews Gaussian processes (GPs) and introduces the latent NNGP model,
 
 # 2. Nearest Neighbor Gaussian Processes
 
-## Review of GPs for spatial data
+## Review of mixed-effects and GP model for spatial data
 
-Let $(s_i, y(s_i), x(s_i))$ be a triplet, where $s_i$ denotes the location of measurement, $y(s_i)$ denotes the response of interest and $x(s_i)$ denotes the known or observed covariates, for $i = 1,..., n$, a spatial linear mixed effects model is given as 
+Let $(s_i, y(s_i), x(s_i))$ be a triplet, where $s_i$ denotes the location of measurement, $y(s_i)$ denotes the response of interest and $x(s_i)$ denotes the known or observed covariates, for $i = 1,..., n$, a spatial linear mixed-effects model is given as 
 $$
 y(s_i) = {x(s_i)}^T \beta + w(s_i) + \epsilon(s_i), \tag{1}
 $$
 where $\beta$ is the vector of coefficients, $w(s_i)$ is the vector of unknown or unobserved covariates or random effects, and $\epsilon(s_i) \sim^{iid} N(0, \tau^2)$ is the random noise. 
 
-Gaussian processes (GPs) are widely used in machine learning to model smooth functions for regression, classification, and other tasks (Rasmussen 2003, as cited in Finley et al., 2021). In spatial statistics, GPs are typically used to model the latent surface $\{w(s)\}$. A GP model for the spatial surface, which is given as 
+Gaussian processes (GPs) are widely used in machine learning to model smooth functions for regression, classification, and other tasks (Rasmussen, 2003, as cited in Finley et al., 2021). In spatial statistics, GPs are typically used to model the latent surface $\{w(s)\}$. A GP model for the spatial surface, which is given as 
 $$
 w(s) \sim GP(0, C(\cdot, \cdot | \theta)), 
 $$
-where $C(\cdot, \cdot | \theta)$ is a covariance function, implies that the vector of random effects $w = {(w(s_1),..., w(s_n))}^T$ follows a multivariate Gaussian distribution with mean zero and covariance matrix $C(\theta) = C = (c_{ij})$, where $c_{ij} = C(s_i, s_j | \theta)$ and $\theta$ is the covariance parameters of the GP. 
-
-A popular choice of $\theta$ for $C(\cdot, \cdot | \theta)$ is selected from the Matérn covariance function or Matérn kernel (Matérn, 1960). For example, let $s_i$ and $s_j$ be two points in $\mathcal{D}$, then the Matérn covariance function is specified as 
+where $C(\cdot, \cdot | \theta)$ is a covariance function, implies that the vector of random effects $w = {(w(s_1),..., w(s_n))}^T$ follows a multivariate Gaussian distribution with mean zero and covariance matrix $C(\theta) = C = (c_{ij})$, where $c_{ij} = C(s_i, s_j | \theta)$ and $\theta$ is the covariance parameters of the GP. The process is completely specified by a valid covariance function $C(\cdot, \cdot | \theta)$ (Datta et al., 2016). A popular choice of $\theta$ for $C(\cdot, \cdot | \theta)$ is selected from the Matérn covariance function or Matérn kernel (Matérn, 1960). For example, let $s_i$ and $s_j$ be two points in $\mathcal{D}$, then the Matérn covariance function is given as 
 $$
 C(s_i, s_j; \sigma^2, \phi, \nu) = \frac{\sigma^2} {2^{\nu - 1} \Gamma(\nu)} {(||s_i - s_j|| \phi)}^{\nu} \mathcal{K}_\nu {(||s_i - s_j|| \phi)}, \ \ \ \ \phi > 0, \nu > 0, 
 $$
-where $\theta = \{ \sigma^2, \phi, \nu \}$ are respectively the marginal variance, scale (inverse of range) and smoothness parameters, $\Gamma$ is the gamma function, $||\cdot||$ denotes the Euclidean distance in $\mathbb{R}^d$, and $\mathcal{K}$ is the Bessel function of second kind. 
+where $||s_i - s_j||$ is the Euclidean distance between locations $s_i$ and $s_j$, $\theta = \{ \sigma^2, \phi, \nu \}$ are respectively the marginal variance, scale (inverse of range) and smoothness parameters, $\Gamma$ is the gamma function, $||\cdot||$ denotes the Euclidean distance in $\mathbb{R}^d$, and $\mathcal{K}$ is the Bessel function of second kind (Stein, 1999, as cited in Datta et al., 2016; Finley et al., 2019). 
 
-The hierarchical model can be constructed by combining the mixed effect model for the response $y$ and the GP model for the random effects $w$ and is given as 
+The hierarchical model can be constructed by combining the mixed-effects model for the response and the GP model for the random effects and is given as 
 $$
 p(\beta, \theta, \tau^2) \times N(w | 0, C(\theta)) \times N(y | X \beta + w, \tau^2 I), \tag{2}
 $$
@@ -51,7 +49,7 @@ $$
 N(y | X \beta, \Sigma = C(\theta) + \tau^2 I).  \tag{3}
 $$
 
-In a frequentist paradigm, parameter estimation can be obtained from (3) via MLE (maximum likelihood estimation), whereas in a Bayesian framework, after assigning priors to the parameters, posterior inference can be obtained from either of the hierarchical model (2) or marginal model (3) model using MCMC (Markov chain Monte Carlo; Finley et al., 2021). 
+In a frequentist paradigm, parameter estimation can be obtained from (3) via MLE (maximum likelihood estimation), whereas in a Bayesian framework, after assigning priors to the parameters, posterior inference can be obtained from either (2) or (3) using MCMC (Markov chain Monte Carlo; Finley et al., 2021). 
 
 Alternatively, (2) is the same as 
 $$
@@ -67,15 +65,30 @@ $$
 
 ## NNGPs for spatial data 
 
-When $n$ is large, evaluating both (2) an (3) can be computationally challenging or infeasible. More specifically, evaluating $N(w | 0, C)$ requires $\mathcal{O}(n^3)$ computations and storing the matrix $C$ requires $\mathcal{O}(n^2)$ storage. In addition, predicting the response at new locations $K$ requires additional $\mathcal{O}(kn^2)$ operations. Unfortunately, integrating $w$ out from (2) does not always give computational advantages either. 
+When $n$ is large, evaluating both (2) and (3) can be computationally challenging or infeasible. More specifically, evaluating $N(w | 0, C)$ requires $\mathcal{O}(n^3)$ computations and storing the matrix $C$ requires $\mathcal{O}(n^2)$ storage. In addition, predicting the response at new locations $K$ requires additional $\mathcal{O}(kn^2)$ operations. Unfortunately, integrating $w$ out from (2) does not always give computational advantages either. 
 
 One of the solutions is to replace GP prior for the spatial random effects $w$ with a NNGP prior (Datta et al., 2016, as cited in Finley et al., 2021). 
 
-- Include Finley et al., 2021
+Let $\mathcal{R} = \{s_1, ..., s_n\}$ be any finite set of locations in the spatial domain $\mathcal{D}$ and $w_{\mathcal{R}} = {(w(s_1), ..., w(s_n))}^T$. For any location in $\mathcal{D}$, define neighbor sets as 
+$$
+N(s_1) = \{\} \ (\text{empty set}), 
+$$
+$$
+N(s_i) = \min(m, i - 1) \ \text{nearest neighbors of} \ s_i \ \text{in} \ s_1, ..., s_{i-1}, \ \text{for} \ i = 2, ..., n, \tag{4}
+$$
+$$
+N(s) = m \ \text{nearest neighbors of} \ s \ \text{in} \ \mathcal{R}, 
+$$
+then the NNGP is given as 
+$$
+w_{\mathcal{R}} \sim \prod_{i = 1}^n p(w_i | w(N(s_i))). \tag{5}
+$$
 
-- Move Finley et al., 2019 after "That is" 
+- Check Vecchia (1988) and Stein, Chi, and Welty (2004)
 
-That is, the underlying idea of the NNGP models is similar to that of the graphical models. More specifically, the joint distribution for a random vector $w$ can be viewed as a directed acyclic graph (DAG). More specifically, $p(w) = p(w_1, w_2, ... w_n)$ can be written as 
+- Check Datta et al. (2016)
+
+That is, the underlying idea of the NNGP models is similar to that of the graphical models. The joint distribution for a random vector $w$ can be viewed as a directed acyclic graph (DAG). More specifically, $p(w) = p(w_1, w_2, ... w_n)$ can be written as 
 $$
 p(w) = p(w_1) \prod_{i = 2}^n p(w_i | Pa[i]), \tag{4-1}
 $$
@@ -121,7 +134,7 @@ a_{n1} & a_{n2} & \cdots & a_{nn_1} & 0 \\
 \eta_3 \\
 \vdots \\
 \eta_n \\
-\end{bmatrix} \tag{A4}
+\end{bmatrix} \tag{4-4}
 $$
 
 (Datta et al., 2017), 
