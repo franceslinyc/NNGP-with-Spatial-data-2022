@@ -38,7 +38,7 @@ where $C(\cdot, \cdot | \theta)$ is a covariance function, implies that the vect
 $$
 C(s_i, s_j; \sigma^2, \phi, \nu) = \frac{\sigma^2} {2^{\nu - 1} \Gamma(\nu)} {(||s_i - s_j|| \phi)}^{\nu} \mathcal{K}_\nu {(||s_i - s_j|| \phi)}, \ \ \ \ \phi > 0, \nu > 0, 
 $$
-where $||s_i - s_j||$ is the Euclidean distance between locations $s_i$ and $s_j$, $\theta = \{ \sigma^2, \phi, \nu \}$ are respectively the marginal variance, scale (inverse of range) and smoothness parameters, $\Gamma$ is the gamma function, $||\cdot||$ denotes the Euclidean distance in $\mathbb{R}^d$, and $\mathcal{K}$ is the Bessel function of second kind (Stein, 1999, as cited in Datta et al., 2016; Finley et al., 2019). 
+where $||s_i - s_j||$ is the Euclidean distance between locations $s_i$ and $s_j$, $\theta = \{ \sigma^2, \phi, \nu \}$ are respectively the marginal variance, scale (inverse of range) or decay and smoothness parameter, $\Gamma$ is the gamma function, $||\cdot||$ denotes the Euclidean distance in $\mathbb{R}^d$, and $\mathcal{K}$ is the Bessel function of second kind (Stein, 1999, as cited in Datta et al., 2016; Finley et al., 2019). 
 
 The hierarchical model can be constructed by combining the mixed-effects model for the response and the GP model for the random effects and is given as 
 $$
@@ -84,9 +84,23 @@ $$
 w_{\mathcal{R}} \sim \prod_{i = 1}^n p(w_i | w(N(s_i))). \tag{5}
 $$
 
-- Check Vecchia (1988) and Stein, Chi, and Welty (2004)
+- from Datta et al. (2016)
 
-- Check Datta et al. (2016)
+Recall that by chain rule, joint density... can be expressed as a product of conditional densities. That is, 
+$$
+p(w_\mathcal{S}) = 
+$$
+$$
+= \prod_{i = 1}^k p(w(s_i) | \cap_{j = 1}^{k - 1} w(s_j)).  
+$$
+
+Next replace the right-hand side of... with smaller, carefully chosen, conditional sets of size at most $m$, where $m \ll k$ ()..., then 
+$$
+\tilde{p}(w_\mathcal{S}) =  \prod_{i = 1}^k p(w(s_i) | w_{N(s_i)}), 
+$$
+where 
+
+- from Finley et al. (2019)
 
 That is, the underlying idea of the NNGP models is similar to that of the graphical models. The joint distribution for a random vector $w$ can be viewed as a directed acyclic graph (DAG). More specifically, $p(w) = p(w_1, w_2, ... w_n)$ can be written as 
 $$
@@ -149,7 +163,8 @@ However, the Cholesky factorization for the full GP covariance $C$ does not offe
 
 To construct a sparse precision matrix, start with a dense $nxn$ covariance matrix $C$ and construct a sparse strictly lower-triangular matrix $A$ with no more than $m(\ll n)$ nonzero entries in each row and the diagonal matrix $D$, then the matrix $\tilde{C} = {(I - A)}^{-1} D {(I - A)}^{-T}$ is a covariance matrix and its inverse ${\tilde{C}}^{-1} = {(I - A)}^{T} D^{-1} {(I - A)}^{}$ is sparse. This leads to the latent NNGP model in the section below. 
 
-NNGP can also be viewed as (Finley et al., 2021).
+NNGP can also be viewed as as a special case of a Gaussian Markov Random Field (GMRF; Rue and Held 2005, as cited in Finley et al., 2021). 
+
 
 ## 2.0. Latent NNGP 
 
@@ -211,9 +226,9 @@ Both the latent NNGP (sequential NNGP) and the collapsed NNGP model (the collaps
 
 Instead of using NNGP for the latent Gaussian process $w$, the response NNGP model applies the marginal Gaussian process for the response (Finley et al., 2019, as cited in Finley et al., 2021). 
 
-Consider the marginal Gaussian process for the response
+Consider the GP marginal model for the response
 $$
-\{y(s)\} \sim GP({x(s)}^T \beta, \Sigma(\cdot, \cdot)), 
+Y \sim N(X \beta, \Sigma),
 $$
 where $\Sigma$ is the marginalized covariance function $\Sigma$ and is specified as $\Sigma(s_i, s_j) = C(s_i, s_j | \theta) + \tau^2 \delta(s_i, s_j),$ where $\delta$ is the Kronecker delta (Finley et al., 2021). 
 
@@ -229,23 +244,9 @@ The dimension of the parameter space is reduced from $\mathcal{O}(n)$ to $\mathc
 
 ...... MCMC methods are used to obtain approximate inference. ...... However, running MCMC methods such as the Gibbs’ sampler for several thousand iterations may still be very slow. 
 
-The conjugate NNGP model offers exact (MCMC-free) posterior inference by fixing certain covariance parameters in the response NNGP model (Finley et al., 2021). 
+The conjugate NNGP model offers exact (MCMC-free) posterior inference by fixing certain covariance parameters (i.e., $\phi$ and $\alpha$) in the response NNGP model (Finley et al., 2021). 
 
-Consider the marginal model from Section 2.2 
-$$
-Y \sim N(X \beta, {\Sigma})
-$$
-and define $\alpha$ as $\alpha = \tau^2 / \sigma^2$, then the MCMC-free marginal model can be rewritten as 
-$$
-Y \sim N(X \beta, \sigma^2 {M}), 
-$$
-where ${M} = G + \alpha I$ and $G$ is the Matérn correlation matrix corresponding to the covariance matrix $C$, that is, $G[i,j] = C(s_i, s_j, {(1, \nu, \phi)}^T)$.
-
-Replace $M$ with $\tilde{M}$, then the analogous NNGP model is specified as 
-$$
-Y \sim N(X \beta, \sigma^2 \tilde{M}), \tag{9}
-$$
-where $\tilde{M} = \tilde{M}(\alpha, \phi)$ depends on $\alpha$, the spatial range $\phi$, and smoothness parameter $\nu$. That is, recall that $\Sigma$ of the marginal model in Section 2.2 is given as 
+Recall that $\Sigma$ of the GP marginal model in Section 2.2 is given as 
 $$
 \Sigma = \Sigma(s_i, s_j) = C(s_i, s_j | \theta) + \tau^2 \delta(s_i, s_j), 
 $$
