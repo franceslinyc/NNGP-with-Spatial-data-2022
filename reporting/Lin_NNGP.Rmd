@@ -1,5 +1,5 @@
 ---
-title: "NNGP Models with Spatial Examples of Simulated Data and... "
+title: "NNGP Models with Spatial Examples of Simulated Data and Forest Canopy Height" 
 author: "Frances Lin"
 date: "Dec 2022"
 output: pdf_document
@@ -18,11 +18,11 @@ On the other hand, while the original NNGP (nearest neighbor Gaussian process) m
 
 Three alternate formulations of the NNGP model that are more efficient and practical than the latent NNGP model (2016) are proposed: (1) the collapsed NNGP model, (2) the response NNGP model, and (3) the conjugate NNGP model, and these models are accessible through the `R` package `spNNGP` (Finley et al., 2021). 
 
-Section 2 reviews Gaussian processes (GPs) and introduces the latent NNGP model, which is followed by three alternate formulations of the latent NNGP model: (1) a collapsed NNGP model, (2) a NNGP model for the response (with no latent process), and (3) a conjugate NNGP model that allows for MCMC-free exact inference. Section 3. ...... Section 4 includes the discussion. ...... are included in the Appendix. 
+Section 2 reviews Gaussian process (GP), introduces sparsity through graphical model and formulates nearest neighbor Gaussian process (NNGP). Section 3 introduces the latent NNGP model, which is followed by three alternate formulations of the latent NNGP model: (1) a collapsed NNGP model, (2) a NNGP model for the response (with no latent process), and (3) a conjugate NNGP model that allows for MCMC-free exact inference. Section 4 ...... Section 5 includes the discussion. ...... are included in the Appendix. 
 
 # 2. Nearest Neighbor Gaussian Processes
 
-## Review of mixed-effects and GP model for spatial data
+## 2.1. Review of mixed-effects and GP model for spatial data
 
 Let $(s_i, y(s_i), x(s_i))$ be a triplet, where $s_i$ denotes the location of measurement, $y(s_i)$ denotes the response of interest and $x(s_i)$ denotes the known or observed covariates, for $i = 1,..., n$, a spatial linear mixed-effects model is given as 
 $$
@@ -63,11 +63,13 @@ y | \beta, w, \tau^2 \sim N(X\beta + w, \tau^2I).
 $$
 
 
-## NNGPs for spatial data 
+## 2.2. Nearest Neighbor Gaussian Processes for large spatial data 
 
 When $n$ is large, evaluating both (2) and (3) can be computationally challenging or infeasible. More specifically, evaluating $N(w | 0, C)$ requires $\mathcal{O}(n^3)$ computations and storing the matrix $C$ requires $\mathcal{O}(n^2)$ storage. In addition, predicting the response at new locations $K$ requires additional $\mathcal{O}(kn^2)$ operations. Unfortunately, integrating $w$ out from (2) does not always give computational advantages either. 
 
 One of the solutions is to replace GP prior for the spatial random effects $w$ with a NNGP prior (Datta et al., 2016, as cited in Finley et al., 2021). 
+
+### from Finley et al. (2021)
 
 Let $\mathcal{R} = \{s_1, ..., s_n\}$ be any finite set of locations in the spatial domain $\mathcal{D}$ and $w_{\mathcal{R}} = {(w(s_1), ..., w(s_n))}^T$. For any location in $\mathcal{D}$, define neighbor sets as 
 $$
@@ -84,23 +86,31 @@ $$
 w_{\mathcal{R}} \sim \prod_{i = 1}^n p(w_i | w(N(s_i))). \tag{5}
 $$
 
-- from Datta et al. (2016)
+### from Datta et al. (2016)
 
-Recall that by chain rule, joint density... can be expressed as a product of conditional densities. That is, 
+Let $\mathcal{S} = \{s_1, s_2, ..., s_k\}$ be a fixed collection of distinct locations in $\mathcal{D} \subseteq \mathcal{R}^d$ ($\mathcal{S}$ is referred to as the *reference set*), then by the chain rule, joint density of $w_\mathcal{S}$ can be expressed as a product of conditional densities. That is, 
 $$
-p(w_\mathcal{S}) = 
+p(w_\mathcal{S}) = p(w(s_1)) p(w(s_2) | w(s_1)) \cdots p(w(s_k) | w(s_{k-1}), ..., w(s_1))
 $$
 $$
 = \prod_{i = 1}^k p(w(s_i) | \cap_{j = 1}^{k - 1} w(s_j)).  
 $$
 
-Next replace the right-hand side of... with smaller, carefully chosen, conditional sets of size at most $m$, where $m \ll k$ ()..., then 
+Next replace the right-hand side of... with smaller, carefully chosen, conditioning sets of size at most $m$, where $m \ll k$ (see, e.g., ...), then, for every $s_i \in \mathcal{S}$, a smaller conditioning sets $N(s_i) \subset \mathcal{S} \setminus \{s_i\}$ is used to construct a new density 
 $$
 \tilde{p}(w_\mathcal{S}) =  \prod_{i = 1}^k p(w(s_i) | w_{N(s_i)}), 
 $$
-where 
+where $w_{N(s_i)}$ is the vector of $w(s)$ over $N(s_i)$. 
 
-- from Finley et al. (2019)
+The pair $\{\mathcal{S}, N_\mathcal{S}\}$ can be viewed as a directed graph $\mathcal{G}$, where $\mathcal{S} (= \{s_1, s_2, ..., s_k\})$ is the set of nodes and $N_\mathcal{S} (= \{N(s_i); i = 1, 2, ..., k\})$ is the set of directed edges. $N(s_i)$ denotes the set of directed neighbors of $s_i$ ($N(s_i)$ is referred to as the *neighbor set* for $s_i$). If $\mathcal{G}$ is a directed acyclic graph, then $\tilde{p}(w_\mathcal{S})$ is a proper multivariate joint density (see Appendix A1 of Datta et al., 2016). In addition, for a very general class of neighboring sets, $\tilde{p}(w_\mathcal{S})$ is a joint density of a multivariate Gaussian distribution with a sparse precision matrix $\tilde{C}^{-1}_\mathcal{S}$. More specifically, let $C_{N(s_i)}$ be the covariance matrix of $w_{N(s_i)}$ and $C_{s_i, N(s_i)}$ be the cross-covariance matrix between $w(s_i)$ and $w_{N(s_i)}$, then $\tilde{p}(w_\mathcal{S})$ is a multivariate Gaussian density with covariance matrix $\tilde{C}_\mathcal{S} = {B_\mathcal{S}}^{-1} F^{-1}_\mathcal{S} B_\mathcal{S}$ and 
+$$
+\tilde{p}(w_\mathcal{S}) =  \prod_{i = 1}^k N(w(s_i) | B_{s_i} w_{N(s_i)}, F_{s_i}), 
+$$
+where $B_{s_i} = C_{s_i, N(s_i)} C^{-1}_{N(s_i)}$ and $F_{s_i} = C(s_i, s_i) - C_{s_i, N(s_i)} C^{-1}_{N(s_i)} C_{N(s_i), s_i}$. This is because, by the theorem, if $p(w_\mathcal{S}) = N(w_{\mathcal{S}} | 0, C_{\mathcal{S}})$, then $w(s_i) | w_{N(s_i)} \sim N(B_{s_i} w_{N(s_i)}, F_{s_i})$ (see Appendix A2 of Datta et al., 2016). 
+
+...... $\tilde{p}(w_\mathcal{S})$ is referred to as the nearest neighbor density of $w_\mathcal{S}$.
+
+### from Finley et al. (2019)
 
 That is, the underlying idea of the NNGP models is similar to that of the graphical models. The joint distribution for a random vector $w$ can be viewed as a directed acyclic graph (DAG). More specifically, $p(w) = p(w_1, w_2, ... w_n)$ can be written as 
 $$
@@ -165,8 +175,9 @@ To construct a sparse precision matrix, start with a dense $nxn$ covariance matr
 
 NNGP can also be viewed as as a special case of a Gaussian Markov Random Field (GMRF; Rue and Held 2005, as cited in Finley et al., 2021). 
 
+# 3. NNGP Models 
 
-## 2.0. Latent NNGP 
+## 3.0. Latent NNGP 
 
 The original NNGP model proposed by Datta et al. (2016) constructed the neighbor sets based on $m$ nearest neighbors and replaced the GP prior for spatial random effects $w$ in (2) with a NNGP prior 
 $$
@@ -199,7 +210,7 @@ $$
 y | \beta, w, \tau^2 \sim N(X\beta + w, \tau^2I). 
 $$
 
-## 2.1. Collapsed NNGP
+## 3.1. Collapsed NNGP
 
 The collapsed NNGP model...... 
 
@@ -220,7 +231,7 @@ A normal prior $N(\mu_{\beta}, V_{\beta})$ is used for $\beta$, inverse-Gamma pr
 Explain Algorithm 1 in words here.
 
 
-## 2.2. NNGP for the Response
+## 3.2. NNGP for the Response
 
 Both the latent NNGP (sequential NNGP) and the collapsed NNGP model (the collapsed version of the latent NNGP model) make predication at a new location by first recovering the spatial random effects $w$ and predicting value at the new location with kriging. However, if inference on the latent process is of interest, the recovery of $w$ is necessary. Otherwise, it is often a computational burden. ......
 
@@ -240,7 +251,7 @@ where $\tilde{\Sigma}$ is the NNGP covariance matrix derived from $\Sigma = C(\t
 
 The dimension of the parameter space is reduced from $\mathcal{O}(n)$ to $\mathcal{O}(1)$, and the lower dimensional NNGP tends to have improved MCMC convergence (Finley et al., 2019, as cited in Finely et al., 2021). 
 
-## 2.3. MCMC-Free Exact Bayesian Inference Using Conjugate NNGP 
+## 3.3. MCMC-Free Exact Bayesian Inference Using Conjugate NNGP 
 
 ...... MCMC methods are used to obtain approximate inference. ...... However, running MCMC methods such as the Gibbs’ sampler for several thousand iterations may still be very slow. 
 
@@ -295,18 +306,25 @@ $$
 where $MVS_{t_{\kappa}} (B^{-1} b, (b / a) B^{-1})$ denotes the multivariate noncentral Student's $t$ distribution with degrees of freedom $\kappa$, mean $B^{-1} b$ and variance $b B^{-1} / (a - 1)$. The marginal posterior mean and variance for $\sigma^2$ are $b_\sigma^* / (a_\sigma^* - 1)$ and $b_\sigma^{2*} / {(a_\sigma^* - 1)}^2 (a_\sigma^* - 2)$, respectively. 
 
  
-# 3. Applications to Spatial data
+# 4. Applications to Spatial data
 
-## 3.1. Simulated data 
+## 4.1. Simulated data 
 
-## 3.2. Real data 
+## 4.2. Real data 
 
-# 4. 
+# 5. Discussion
 
 
 \newpage 
 
 # Reference 
 
+Datta, A., Banerjee, S., Finley, A. O., & Gelfand, A. E. (2016). Hierarchical nearest-neighbor Gaussian process models for large geostatistical datasets. Journal of the American Statistical Association, 111(514), 800-812.
+
+Datta, A., Banerjee, S., Finley, A. O., & Gelfand, A. E. (2016). Appendix A1 of Hierarchical nearest-neighbor Gaussian process models for large geostatistical datasets. Journal of the American Statistical Association, 111(514), 800-812. 
+
+Datta, A., Banerjee, S., Finley, A. O., & Gelfand, A. E. (2016). Appendix A2 of Hierarchical nearest-neighbor Gaussian process models for large geostatistical datasets. Journal of the American Statistical Association, 111(514), 800-812. 
+
 Finley, A. O., Datta, A., Cook, B. D., Morton, D. C., Andersen, H. E., & Banerjee, S. (2019). Efficient algorithms for Bayesian nearest neighbor Gaussian processes. Journal of Computational and Graphical Statistics, 28(2), 401-414.
+
 
