@@ -1,5 +1,5 @@
 ---
-title: "NNGP Models with Spatial Examples of Simulated Data and Forest Canopy Height" 
+title: "NNGP Models with Spatial Examples of Simulated Data and Forest Canopy Heights" 
 author: "Frances Lin"
 date: "Dec 2022"
 output: pdf_document
@@ -18,7 +18,7 @@ On the other hand, while the original NNGP (nearest neighbor Gaussian process) m
 
 Three alternate formulations of the NNGP model that are more efficient and practical than the latent NNGP model (2016) are proposed: (1) the collapsed NNGP model, (2) the response NNGP model, and (3) the conjugate NNGP model, and these models are accessible through the `R` package `spNNGP` (Finley et al., 2021). 
 
-Section 2 reviews Gaussian process (GP), introduces sparsity through graphical model and formulates nearest neighbor Gaussian process (NNGP). Section 3 introduces the latent NNGP model, which is followed by three alternate formulations of the latent NNGP model: (1) a collapsed NNGP model, (2) a NNGP model for the response (with no latent process), and (3) a conjugate NNGP model that allows for MCMC-free exact inference. Section 4 ...... Section 5 includes the discussion. ...... are included in the Appendix. 
+Section 2 reviews Gaussian process (GP) and formulates nearest neighbor Gaussian process (NNGP) through graphical models. Section 3 introduces the latent NNGP model, which is followed by three alternate formulations of the latent NNGP model: (1) a collapsed NNGP model, (2) a NNGP model for the response (with no latent process), and (3) a conjugate NNGP model that allows for MCMC-free exact inference. Section 4 ...... Section 5 includes the discussion. ...... are included in the Appendix. 
 
 # 2. Nearest Neighbor Gaussian Processes
 
@@ -195,9 +195,7 @@ The full conditional distribution for $w$ in (7) is
 $$
 w | \cdot \sim(B(y - X\beta) / \tau^2, B), 
 $$
-where $B = \tilde{C}^{-1}(\theta) + I/\tau^2$. However, this block update of $w$ is not practical (Finley et al., 2021). ......
-
-Instead, the MCMC implementation of the latent NNGP involves updating the $n$ full conditions $w_i | \cdot$ sequentially (Finley et al., 2021). While......, the high-dimensional MCMC model......
+where $B = \tilde{C}^{-1}(\theta) + I/\tau^2$ is the full conditional precision matrix. However, this block update of $w$ is not practical. This is because even though $B$ is as sparse as $\tilde{C}^{-1}(\theta)$, unlike $\tilde{C}^{-1}(\theta)$, the determinant of $B$ cannot be calculated in $\mathcal{O}(n)$ FLOPs (Finley et al., 2021). Instead, the MCMC implementation of the latent NNGP involves updating the $n$ full conditions $w_i | \cdot$ *sequentially* (Finley et al., 2021). But, MCMC convergence for high-dimensional model like the latent NNGP is difficult to study to prove reliable (Finley et al., 2019). 
 
 Alternatively, (7) is the same as 
 $$
