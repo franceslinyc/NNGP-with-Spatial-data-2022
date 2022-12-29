@@ -18,7 +18,7 @@ On the other hand, while the original NNGP (nearest neighbor Gaussian process) m
 
 Three alternate formulations of the NNGP model that are more efficient and practical than the latent NNGP model (2016) are proposed: (1) the collapsed NNGP model, (2) the response NNGP model, and (3) the conjugate NNGP model, and these models are accessible through the `R` package `spNNGP` (Finley et al., 2021). 
 
-Section 2 reviews Gaussian process (GP) and formulates nearest neighbor Gaussian process (NNGP) through graphical models. Section 3 introduces the latent NNGP model, which is followed by three alternate formulations of the latent NNGP model: (1) a collapsed NNGP model, (2) a NNGP model for the response (with no latent process), and (3) a conjugate NNGP model that allows for MCMC-free exact inference. Section 4 ...... Section 5 includes the discussion. ...... are included in the Appendix. 
+*Section 2* reviews Gaussian process (GP) and formulates nearest neighbor Gaussian process (NNGP) through graphical models. *Section 3* introduces the latent NNGP model, which is followed by three alternate formulations of the latent NNGP model: (1) a collapsed NNGP model, (2) a NNGP model for the response (with no latent process), and (3) a conjugate NNGP model that allows for MCMC-free exact inference. *Section 4* ...... *Section 5* includes the discussion. ...... are included in the *Appendix*. 
 
 # 2. Nearest Neighbor Gaussian Processes
 
@@ -183,7 +183,7 @@ The original NNGP model proposed by Datta et al. (2016) constructed the neighbor
 $$
 w \sim N(0, \tilde{C}(\theta)). \tag{6}
 $$
-This model is referred to as the latent NNGP, which uses a fully Bayesian hierarchical specification 
+This model is referred to as the latent NNGP model, which uses a fully Bayesian hierarchical specification 
 $$
 p(\beta, \theta, \tau^2) \times N(w | 0, \tilde{C}(\theta)) \times N(y | X \beta + w, \tau^2 I), \tag{7}
 $$
@@ -195,7 +195,7 @@ The full conditional distribution for $w$ in (7) is
 $$
 w | \cdot \sim(B(y - X\beta) / \tau^2, B), 
 $$
-where $B = \tilde{C}^{-1}(\theta) + I/\tau^2$ is the full conditional precision matrix. However, this block update of $w$ is not practical. This is because even though $B$ is as sparse as $\tilde{C}^{-1}(\theta)$, unlike $\tilde{C}^{-1}(\theta)$, the determinant of $B$ cannot be calculated in $\mathcal{O}(n)$ FLOPs (Finley et al., 2021). Instead, the MCMC implementation of the latent NNGP involves updating the $n$ full conditions $w_i | \cdot$ *sequentially* (Finley et al., 2021). But, MCMC convergence for high-dimensional model like the latent NNGP is difficult to study to prove reliable (Finley et al., 2019). 
+where $B = \tilde{C}^{-1}(\theta) + I/\tau^2$ is the full conditional precision matrix. However, this block update of $w$ is not practical. This is because even though $B$ is as sparse as $\tilde{C}^{-1}(\theta)$ is, unlike $\tilde{C}^{-1}(\theta)$, the determinant of $B$ cannot be calculated in $\mathcal{O}(n)$ FLOPs (Finley et al., 2021). Instead, the MCMC implementation of the latent NNGP model involves updating the $n$ full conditions (or parameters) $w_i | \cdot$ *sequentially* (Finley et al., 2021). But, MCMC convergence for high-dimensional model like this is difficult to study to prove reliable (Finley et al., 2019) and can also imply slow convergence (Finley et al., 2019; Finley et al., 2021). 
 
 Alternatively, (7) is the same as 
 $$
@@ -208,17 +208,13 @@ $$
 y | \beta, w, \tau^2 \sim N(X\beta + w, \tau^2I). 
 $$
 
+Three alternate variants of the latent NNGP model are proposed. To reduce the parameter dimensionality of the latent NNGP model, these models consider marginalizing over the entire vector of spatial random effects (Finley et al., 2019). 
+
 ## 3.1. Collapsed NNGP
 
-The collapsed NNGP model...... 
+A collapsed NNGP model not only enjoys the frugality of a low-dimensional MCMC chain but also allows for full recovery of the latent random effects $w$ (Finley et al., 2019). 
 
-A collapsed NNGP model not only enjoys the frugality of a low-dimensional MCMC chain but also allows for full recovery of the latent random effects $w$. 
-
-Consider the two-stage hierarchical specification 
-$$
-N(w | 0, \tilde{C}(\theta)) \times N(y | X \beta + w, \tau^2 I)
-$$
-and integrate out $w$ to avoid sampling $w$ in the Gibb's sampler, then the collapsed NNGP model is specified as 
+Consider the two-stage hierarchical specification $N(w | 0, \tilde{C}(\theta)) \times N(y | X \beta + w, \tau^2 I)$ and integrate out $w$ to avoid sampling $w$ in the Gibb's sampler, then the collapsed NNGP model is specified as 
 $$
 y \sim N(X \beta, \Sigma = \tilde{C}(\theta) + \tau^2 I),  \tag{7*}
 $$
@@ -226,12 +222,10 @@ where $\theta = \{ \sigma^2, \phi, \nu \}$ for Matérn covariance function.
 
 A normal prior $N(\mu_{\beta}, V_{\beta})$ is used for $\beta$, inverse-Gamma priors are used for the spatial and noise variances $\sigma^2$ and $\tau^2$, and uniform priors are used for the range and smoothness parameters $1/\phi$ and $\nu$. 
 
-Explain Algorithm 1 in words here.
-
 
 ## 3.2. NNGP for the Response
 
-Both the latent NNGP (sequential NNGP) and the collapsed NNGP model (the collapsed version of the latent NNGP model) make predication at a new location by first recovering the spatial random effects $w$ and predicting value at the new location with kriging. However, if inference on the latent process is of interest, the recovery of $w$ is necessary. Otherwise, it is often a computational burden. ......
+Both the latent NNGP and collapsed NNGP model (the collapsed version of the latent NNGP model) make predication at a new location by first recovering the spatial random effects $w$ and predicting value at the new location with kriging. However, if inference on the latent process is of interest, the recovery of $w$ is necessary. Otherwise, it is often a computational burden (Finley et al., 2019). 
 
 Instead of using NNGP for the latent Gaussian process $w$, the response NNGP model applies the marginal Gaussian process for the response (Finley et al., 2019, as cited in Finley et al., 2021). 
 
@@ -245,13 +239,13 @@ Since the covariance function of an NNGP can be derived from any parent GP, next
 $$
 Y \sim N(X \beta, \tilde{\Sigma}), \tag{8}
 $$
-where $\tilde{\Sigma}$ is the NNGP covariance matrix derived from $\Sigma = C(\theta) + \tau^2 I.$ (Finley et al., 2021). The sparsity in Section 2 can be applied to $\tilde{\Sigma}^{-1}$. 
+where $\tilde{\Sigma}$ is the NNGP covariance matrix derived from $\Sigma = C(\theta) + \tau^2 I.$ (Finley et al., 2021). The sparsity in Section 2.2 can be applied to $\tilde{\Sigma}^{-1}$. 
 
 The dimension of the parameter space is reduced from $\mathcal{O}(n)$ to $\mathcal{O}(1)$, and the lower dimensional NNGP tends to have improved MCMC convergence (Finley et al., 2019, as cited in Finely et al., 2021). 
 
 ## 3.3. MCMC-Free Exact Bayesian Inference Using Conjugate NNGP 
 
-...... MCMC methods are used to obtain approximate inference. ...... However, running MCMC methods such as the Gibbs’ sampler for several thousand iterations may still be very slow. 
+MCMC methods are commonly used to obtain approximate Bayesian inference since the normalizing constant often involves high-dimensional integrals and is therefore hard to compute (Salakhutdinov, 2010). However, running MCMC methods such as the Gibbs’ sampler for several thousand iterations may still be very slow (Finley et al., 2019). 
 
 The conjugate NNGP model offers exact (MCMC-free) posterior inference by fixing certain covariance parameters (i.e., $\phi$ and $\alpha$) in the response NNGP model (Finley et al., 2021). 
 
@@ -325,4 +319,4 @@ Datta, A., Banerjee, S., Finley, A. O., & Gelfand, A. E. (2016). Appendix A2 of 
 
 Finley, A. O., Datta, A., Cook, B. D., Morton, D. C., Andersen, H. E., & Banerjee, S. (2019). Efficient algorithms for Bayesian nearest neighbor Gaussian processes. Journal of Computational and Graphical Statistics, 28(2), 401-414.
 
-
+Salakhutdinov, R. (2010) Approximate Inference using MCMC. MIT. https://www.mit.edu/~9.520/spring10/Classes/class21_mcmc_2010.pdf
