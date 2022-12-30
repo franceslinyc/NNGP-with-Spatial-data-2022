@@ -7,6 +7,8 @@ Frances Lin
 
 Expand the NNGP (nearest-neighbor Gaussian process) models (two MCMC-based models and one MCMC-free model for fast and scalable inference for big spatial data) and include spatial examples of simulated data and forest canopy heights using the **R** package `spNNGP` and the HPC (high performance computing) cluster at OSU. 
 
+Note that the package `spNNGP` is written in **C/C++** and uses **openMP** parallelization and **Fortran**'s Basic Linear Algebra Subprograms and Linear Algebra Package for computationally intensive matrix operations. 
+
 
 ## Documentation
 
