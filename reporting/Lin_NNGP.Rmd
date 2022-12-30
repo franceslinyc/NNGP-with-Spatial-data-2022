@@ -195,7 +195,7 @@ The full conditional distribution for $w$ in (7) is
 $$
 w | \cdot \sim(B(y - X\beta) / \tau^2, B), 
 $$
-where $B = \tilde{C}^{-1}(\theta) + I/\tau^2$ is the full conditional precision matrix. However, this block update of $w$ is not practical. This is because even though $B$ is as sparse as $\tilde{C}^{-1}(\theta)$ is, unlike $\tilde{C}^{-1}(\theta)$, the determinant of $B$ cannot be calculated in $\mathcal{O}(n)$ FLOPs (Finley et al., 2021). Instead, the MCMC implementation of the latent NNGP model involves updating the $n$ full conditions (or parameters) $w_i | \cdot$ *sequentially* (Finley et al., 2021). But, MCMC convergence for high-dimensional model like this is difficult to study to prove reliable (Finley et al., 2019) and can also imply slow convergence (Finley et al., 2019; Finley et al., 2021). 
+where $B = \tilde{C}^{-1}(\theta) + I/\tau^2$ is the full conditional precision matrix. However, this block update of $w$ is not practical. This is because even though $B$ is as sparse as $\tilde{C}^{-1}(\theta)$ is, unlike $\tilde{C}^{-1}(\theta)$, the determinant of $B$ cannot be calculated in $\mathcal{O}(n)$ FLOPs (Finley et al., 2021). Instead, the MCMC implementation of the latent NNGP model involves updating the $n$ full conditions (or parameters) $w_i | \cdot$ *sequentially* (Finley et al., 2021). However, MCMC convergence for high-dimensional model like this is difficult to study to prove reliable and can also imply slow convergence (Finley et al., 2019; Finley et al., 2021). 
 
 Alternatively, (7) is the same as 
 $$
@@ -208,7 +208,7 @@ $$
 y | \beta, w, \tau^2 \sim N(X\beta + w, \tau^2I). 
 $$
 
-Three alternate variants of the latent NNGP model are proposed. To reduce the parameter dimensionality of the latent NNGP model, these models consider marginalizing over the entire vector of spatial random effects (Finley et al., 2019). 
+Marginalizing one or more variables out tend to lower autocorrelation and improve convergence behavior in MCMC (Liu et al., as cited in Finley et al., 2019). Three alternate variants of the latent NNGP model that aim to reduce the parameter dimensionality of the latent NNGP model are proposed, and these models consider marginalizing over the entire vector of spatial random effects $w$ (Finley et al., 2019). 
 
 ## 3.1. Collapsed NNGP
 
@@ -227,7 +227,7 @@ A normal prior $N(\mu_{\beta}, V_{\beta})$ is used for $\beta$, inverse-Gamma pr
 
 Both the latent NNGP and collapsed NNGP model (the collapsed version of the latent NNGP model) make predication at a new location by first recovering the spatial random effects $w$ and predicting value at the new location with kriging. However, if inference on the latent process is of interest, the recovery of $w$ is necessary. Otherwise, it is often a computational burden (Finley et al., 2019). 
 
-Instead of using NNGP for the latent Gaussian process $w$, the response NNGP model applies the marginal Gaussian process for the response (Finley et al., 2019, as cited in Finley et al., 2021). 
+Instead of using NNGP for the latent Gaussian process $w$, the response NNGP model directly applies the marginal Gaussian process for the response (Finley et al., 2019, as cited in Finley et al., 2021). 
 
 Consider the GP marginal model for the response
 $$
@@ -245,11 +245,11 @@ The dimension of the parameter space is reduced from $\mathcal{O}(n)$ to $\mathc
 
 ## 3.3. MCMC-Free Exact Bayesian Inference Using Conjugate NNGP 
 
-MCMC methods are commonly used to obtain approximate Bayesian inference since the normalizing constant often involves high-dimensional integrals and is therefore hard to compute (Salakhutdinov, 2010). However, running MCMC methods such as the Gibbs’ sampler for several thousand iterations may still be very slow (Finley et al., 2019). 
+MCMC methods are commonly used to obtain approximate inference since the normalizing constant often involves high-dimensional integrals and is therefore hard to compute (Salakhutdinov, 2010). However, running MCMC methods such as the Gibbs’ sampler for several thousand iterations may still be very slow (Finley et al., 2019). 
 
-The conjugate NNGP model offers exact (MCMC-free) posterior inference by fixing certain covariance parameters (i.e., $\phi$ and $\alpha$) in the response NNGP model (Finley et al., 2021). 
+The conjugate NNGP model offers MCMC-free exact posterior inference by fixing certain covariance parameters (i.e., $\phi$ and $\alpha$) in the response NNGP model (Finley et al., 2021). 
 
-Recall that $\Sigma$ of the GP marginal model in Section 2.2 is given as 
+Recall that $\Sigma$ of the GP marginal model in Section 3.2. is given as 
 $$
 \Sigma = \Sigma(s_i, s_j) = C(s_i, s_j | \theta) + \tau^2 \delta(s_i, s_j), 
 $$
@@ -265,7 +265,7 @@ This implies that the MCMC-free conjugate NNGP marginal model is
 $$
 Y \sim N(X \beta, \sigma^2 \tilde{M}), \tag{9}
 $$
-where $\tilde{M} = \tilde{M}(\phi, \alpha)$ is a known covariance matrix once $\phi$ and $\alpha$ are fixed (Finley et al., 2021). The fixed values of $\phi$ and $\alpha$ are either chosen based on a variogram or can be selected more formally using K-fold cross-validation on hold-out data (Finley et al., 2021). This leaves $\beta$ and $\sigma^2$ the only unknown parameters (Finley et al., 2021). 
+where $\tilde{M} = \tilde{M}(\cdot, \cdot | \phi, \alpha)$ is a known covariance matrix once $\phi$ and $\alpha$ are fixed (Finley et al., 2021). The fixed values of $\phi$ and $\alpha$ are either chosen based on a variogram or, more formally, selected using K-fold cross-validation on hold-out data, which leaves $\beta$ and $\sigma^2$ the only unknown parameters (Finley et al., 2021). 
 
 Normal-Inverse-Gamma prior for $(\beta, \sigma^2)$ leads to conjugate Normal-Inverse-Gamma posterior distributions, and other summary quantities of $\beta$ and $\sigma^2$ can easily and exactly be obtained (Finley et al., 2021). That is, for fixed $\phi$ and $\alpha$, the conjugate Bayesian linear regression model can be constructed as 
 $$
@@ -284,8 +284,9 @@ a_\sigma^* = a_\sigma + n/2, \ \  b_\sigma^* = b_\sigma + \frac{1} {2} (\mu_\bet
 $$
 and 
 $$
-B = V_\beta^{-1} + X^T \tilde{M}^{-1} X, \ \ b = V_\beta^{-1} \mu_\beta + X^T \tilde{M}^{-1} y.   
+B = V_\beta^{-1} + X^T \tilde{M}^{-1} X, \ \ b = V_\beta^{-1} \mu_\beta + X^T \tilde{M}^{-1} y
 $$
+(Finley et al., 2019). 
 
 Marginal posterior distributions for $\beta$ and $\sigma^2$ are respectively 
 $$
@@ -295,8 +296,13 @@ and
 $$
 \sigma^2 | y \sim IG (a_\sigma^*, b_\sigma^*), 
 $$
-where $MVS_{t_{\kappa}} (B^{-1} b, (b / a) B^{-1})$ denotes the multivariate noncentral Student's $t$ distribution with degrees of freedom $\kappa$, mean $B^{-1} b$ and variance $b B^{-1} / (a - 1)$. The marginal posterior mean and variance for $\sigma^2$ are $b_\sigma^* / (a_\sigma^* - 1)$ and $b_\sigma^{2*} / {(a_\sigma^* - 1)}^2 (a_\sigma^* - 2)$, respectively. 
+where $MVS_{t_{\kappa}} (B^{-1} b, (b / a) B^{-1})$ denotes the multivariate noncentral Student's $t$ distribution with degrees of freedom $\kappa$, mean $B^{-1} b$ and variance $b B^{-1} / (a - 1)$. The marginal posterior mean and variance for $\sigma^2$ are $b_\sigma^* / (a_\sigma^* - 1)$ and $b_\sigma^{2*} / {(a_\sigma^* - 1)}^2 (a_\sigma^* - 2)$, respectively. However, instead of sampling from the posterior distribution (i.e., sample $\sigma^2$ and then sample $\beta$ one-for-one for each $\sigma^2$ drawn), a fast evaluation of the marginal posterior distributions are implemented (Finley et al., 2019). 
 
+## 3.4. Fitted values, replicate data for model checking and evaluation, and predictions
+
+## 3.5. Software 
+
+Functions in the **R** package `spNNGP` is written in **C/C++** via **R**'s foreign language interface and uses **openMP** (Dagum & Menon, 1998) for parallelization and **Fortran**'s Basic Linear Algebra Subprograms (BLAS; www.netlib.org/blas), e.g., `openBLAS` (Zhang, 2016), and Linear Algebra Package (LAPACK; www.netlib.org/lapack) for computationally intensive matrix operations (Finley et al., 2019; Finley et al., 2021). 
  
 # 4. Applications to Spatial data
 
@@ -306,6 +312,9 @@ where $MVS_{t_{\kappa}} (B^{-1} b, (b / a) B^{-1})$ denotes the multivariate non
 
 # 5. Discussion
 
+(1) 
+
+(2) All of the NNGP models assume Gaussian response. Exploiting the Pólya-Gamma data-augmented sampler of Polson et al. (2013), the latent NNGP model can be extended to model non-Gaussian (i.e. binary) response. Future study could look into extending the latent NNGP model or consider alternative models such as the GGP (generalized Gaussian process) model (Zilber & Katzfuss, 2021) via Vecchia-Laplace approximation or NNMP (nearest neighbor mixture process) model (Zheng, 2022) for other non-Gaussian response such as count, zero-inflated count, zero-inflated semicontinuous, etc. data. 
 
 \newpage 
 
@@ -320,3 +329,7 @@ Datta, A., Banerjee, S., Finley, A. O., & Gelfand, A. E. (2016). Appendix A2 of 
 Finley, A. O., Datta, A., Cook, B. D., Morton, D. C., Andersen, H. E., & Banerjee, S. (2019). Efficient algorithms for Bayesian nearest neighbor Gaussian processes. Journal of Computational and Graphical Statistics, 28(2), 401-414.
 
 Salakhutdinov, R. (2010) Approximate Inference using MCMC. MIT. https://www.mit.edu/~9.520/spring10/Classes/class21_mcmc_2010.pdf
+
+Zheng, X. (2022). A Modeling Framework for Non-Gaussian Spatial and Temporal Processes (Doctoral dissertation, UC Santa Cruz).
+
+Zilber, D., & Katzfuss, M. (2021). Vecchia–Laplace approximations of generalized Gaussian processes for big non-Gaussian spatial data. Computational Statistics & Data Analysis, 153, 107081.
