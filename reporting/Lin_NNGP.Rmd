@@ -243,7 +243,7 @@ Functions in the **R** package `spNNGP` is written in **C/C++** via **R**'s fore
 
 # 5. Discussion
 
-(1) 
+(1) This project reviews NNGP models formation and `spNNGP` **R** package usage in Finley et al., (2021). However, algorithmic details as well as where and how parallelization is used in each algorithm are not well explored but can be referred to Finley et al., (2019). 
 
 (2) NNGP models assume Gaussian response. Exploiting the Pólya-Gamma data-augmented sampler of Polson et al. (2013), the latent NNGP model can be extended to model non-Gaussian (i.e. binary) response (Finley et al., 2021). Future study could look into extending the latent NNGP model or consider alternative models such as the GGP (generalized Gaussian process) model (Zilber & Katzfuss, 2021) via Vecchia-Laplace approximation or NNMP (nearest neighbor mixture process) model (Zheng, et al., 2022; Zheng, 2022) for other non-Gaussian response such as count, zero-inflated count, zero-inflated semicontinuous, etc. data. 
 
