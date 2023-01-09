@@ -122,7 +122,7 @@ The full conditional distribution for $w$ in (7) is
 $$
 w | \cdot \sim(B(y - X \beta) / \tau^2, B), 
 $$
-where $B = \tilde{C}^{-1}(\theta) + I/\tau^2$ is the full conditional precision matrix. However, this block update of $w$ is not practical. This is because even though $B$ is as sparse as $\tilde{C}^{-1}(\theta)$ is, unlike $\tilde{C}^{-1}(\theta)$, the determinant of $B$ cannot be calculated in $\mathcal{O}(n)$ FLOPs (Finley et al., 2021). Instead, the MCMC implementation of the latent NNGP model involves updating the $n$ full conditions (or parameters) $w_i | \cdot$ *sequentially* (Finley et al., 2021). However, MCMC convergence for high-dimensional model like this is difficult to study to prove reliable and can also imply slow convergence (Finley et al., 2019; Finley et al., 2021). 
+where $B = \tilde{C}^{-1}(\theta) + I/\tau^2$ is the full conditional precision matrix. However, this block update of $w$ is not practical. This is because even though $B$ is as sparse as $\tilde{C}^{-1}(\theta)$ is, unlike $\tilde{C}^{-1}(\theta)$, the determinant of $B$ cannot be calculated in $\mathcal{O}(n)$ FLOPs (Finley et al., 2021). Instead, the MCMC implementation of the latent NNGP model involves updating the $n$ full conditions (or parameters) $w_i | \cdot$ *sequentially* (Finley et al., 2021). However, MCMC convergence for high-dimensional model like thi one is difficult to study to prove reliable and can also imply slow convergence (Finley et al., 2019; Finley et al., 2021). 
 
 Alternatively, (7) is the same as 
 $$
@@ -135,7 +135,7 @@ $$
 y | \beta, w, \tau^2 \sim N(X \beta + w, \tau^2I). 
 $$
 
-Marginalizing one or more variables out tend to lower autocorrelation and improve convergence behavior in MCMC (Liu et al., as cited in Finley et al., 2019). Three alternate variants of the latent NNGP model that aim to reduce the parameter dimensionality of the latent NNGP model are proposed, and these models consider marginalizing over the entire vector of spatial random effects $w$ (Finley et al., 2019). 
+Marginalizing one or more variables out tend to lower autocorrelation and improve convergence behavior in MCMC (Liu et al., as cited in Finley et al., 2019). As a result, three alternate variants of the latent NNGP model that aim to reduce the parameter dimensionality are proposed, and these models consider marginalizing over the entire vector of spatial random effects $w$ (Finley et al., 2019). 
 
 ## 3.1. Collapsed NNGP
 
@@ -145,9 +145,11 @@ Consider the two-stage hierarchical specification $N(w | 0, \tilde{C}(\theta)) \
 $$
 y \sim N(X \beta, \Sigma = \tilde{C}(\theta) + \tau^2 I),  \tag{7*}
 $$
-where $\theta = \{ \sigma^2, \phi, \nu \}$ for Matérn covariance function. 
+where $\theta = \{ \sigma^2, \phi, \nu \}$ for Matérn covariance function (Finley et al., 2019). 
 
 A normal prior $N(\mu_{\beta}, V_{\beta})$ is used for $\beta$, inverse-Gamma priors are used for the spatial and noise variances $\sigma^2$ and $\tau^2$, and uniform priors are used for the range and smoothness parameters $1/\phi$ and $\nu$. 
+
+Interested readers are referred to *Section 2.1. Collapsed NNGP* of Finley et al. (2019) for more and **Algorithm 1** and **2** in the same section for algorithmic details, and note that the collapsed NNGP model is not implemented in the `spNNGP` package. 
 
 
 ## 3.2. NNGP for the Response
@@ -241,7 +243,7 @@ Functions in the **R** package `spNNGP` is written in **C/C++** via **R**'s fore
 
 (1) 
 
-(2) All of the NNGP models assume Gaussian response. Exploiting the Pólya-Gamma data-augmented sampler of Polson et al. (2013), the latent NNGP model can be extended to model non-Gaussian (i.e. binary) response. Future study could look into extending the latent NNGP model or consider alternative models such as the GGP (generalized Gaussian process) model (Zilber & Katzfuss, 2021) via Vecchia-Laplace approximation or NNMP (nearest neighbor mixture process) model (Zheng, et al., 2022; Zheng, 2022) for other non-Gaussian response such as count, zero-inflated count, zero-inflated semicontinuous, etc. data. 
+(2) NNGP models assume Gaussian response. Exploiting the Pólya-Gamma data-augmented sampler of Polson et al. (2013), the latent NNGP model can be extended to model non-Gaussian (i.e. binary) response (Finley et al., 2021). Future study could look into extending the latent NNGP model or consider alternative models such as the GGP (generalized Gaussian process) model (Zilber & Katzfuss, 2021) via Vecchia-Laplace approximation or NNMP (nearest neighbor mixture process) model (Zheng, et al., 2022; Zheng, 2022) for other non-Gaussian response such as count, zero-inflated count, zero-inflated semicontinuous, etc. data. 
 
 \newpage 
 
