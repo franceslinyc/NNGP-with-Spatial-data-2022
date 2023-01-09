@@ -156,21 +156,21 @@ Interested readers are referred to *Section 2.1. Collapsed NNGP* of Finley et al
 
 Both the latent NNGP and collapsed NNGP model (the collapsed version of the latent NNGP model) make predication at a new location by first recovering the spatial random effects $w$ and predicting value at the new location with kriging. However, if inference on the latent process is of interest, the recovery of $w$ is necessary. Otherwise, it is often a computational burden (Finley et al., 2019). 
 
-Instead of using NNGP for the latent Gaussian process $w$, the response NNGP model directly applies the marginal Gaussian process for the response (Finley et al., 2019, as cited in Finley et al., 2021). 
+Instead of using NNGP for the latent Gaussian process $w$, the response NNGP model directly applies the marginal Gaussian process for the response $y$ (Finley et al., 2019, as cited in Finley et al., 2021). 
 
 Consider the GP marginal model for the response
 $$
 Y \sim N(X \beta, \Sigma),
 $$
-where $\Sigma$ is the marginalized covariance function $\Sigma$ and is specified as $\Sigma(s_i, s_j) = C(s_i, s_j | \theta) + \tau^2 \delta(s_i, s_j),$ where $\delta$ is the Kronecker delta (Finley et al., 2021). 
-
-Since the covariance function of an NNGP can be derived from any parent GP, next replace the full GP covariance $\Sigma$ with its NNGP analogue $\tilde{\Sigma}$, then the response NNGP marginal model is given as 
+where $\Sigma$ is the marginalized covariance function $\Sigma$ and is specified as $\Sigma(s_i, s_j) = C(s_i, s_j | \theta) + \tau^2 \delta(s_i, s_j),$ where $\delta$ is the Kronecker delta (Finley et al., 2021). Since the covariance function of an NNGP can be derived from any parent GP, next replace the full GP covariance $\Sigma$ with its NNGP analogue $\tilde{\Sigma}$, then the response NNGP marginal model is given as 
 $$
 Y \sim N(X \beta, \tilde{\Sigma}), \tag{8}
 $$
-where $\tilde{\Sigma}$ is the NNGP covariance matrix derived from $\Sigma = C(\theta) + \tau^2 I.$ (Finley et al., 2021). The sparsity in Section 2.2 can be applied to $\tilde{\Sigma}^{-1}$. 
+where $\tilde{\Sigma}$ is the NNGP covariance matrix derived from $\Sigma = C(\theta) + \tau^2 I.$ (Finley et al., 2021). The sparsity properties in *Section 2.2* can also be applied to $\tilde{\Sigma}^{-1}$ (Finley et al., 2019). 
 
 The dimension of the parameter space is reduced from $\mathcal{O}(n)$ to $\mathcal{O}(1)$, and the lower dimensional NNGP tends to have improved MCMC convergence (Finley et al., 2019, as cited in Finely et al., 2021). 
+
+Interested readers are referred to **Algorithm 3** and **4** in *Section 2.2. NNGP for the Response* of Finley et al. (2019) for algorithmic details. 
 
 ## 3.3. MCMC-Free Exact Bayesian Inference Using Conjugate NNGP 
 
