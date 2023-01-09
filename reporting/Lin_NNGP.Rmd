@@ -18,7 +18,7 @@ On the other hand, while the original NNGP (nearest neighbor Gaussian process) m
 
 Three alternate formulations of the NNGP model that are more efficient and practical than the latent NNGP model (2016) are proposed: (1) the collapsed NNGP model, (2) the response NNGP model, and (3) the conjugate NNGP model, and these models are accessible through the `R` package `spNNGP` (Finley et al., 2019; Finley et al., 2021). 
 
-*Section 2* reviews Gaussian process (GP) and formulates nearest neighbor Gaussian process (NNGP) through graphical models. *Section 3* introduces the latent NNGP model, which is followed by three alternate formulations of the latent NNGP model: (1) a collapsed NNGP model, (2) a NNGP model for the response (with no latent process), and (3) a conjugate NNGP model that allows for MCMC-free exact inference. *Section 4* ...... *Section 5* includes the discussion. ...... are included in the *Appendix*. 
+*Section 2* reviews Gaussian process (GP) and formulates nearest neighbor Gaussian process (NNGP) through graphical models. *Section 3* introduces the latent NNGP model, which is followed by three alternate formulations of the latent NNGP model: (1) a collapsed NNGP model, (2) a NNGP model for the response (with no latent process), and (3) a conjugate NNGP model that allows for MCMC-free exact inference. *Section 4* considers the simulated data set and real data set in `spNNGP` package, but details are included in the *Appendix*. *Section 5* includes the discussion. 
 
 # 2. Nearest Neighbor Gaussian Processes
 
@@ -231,6 +231,12 @@ Interested readers are again referred to **Algorithm 5** in *Section 2.3* of Fin
 
 ## 3.4. Fitted values, replicate data for model checking and evaluation, and predictions
 
+For the latent and response NNGP model, once MCMC chains converge, posterior samples can be used to generate various quantities of interest such as fitted values, replicate data at observed location, and predictions at new locations (Finley et al., 2021). 
+
+For the latent model and response model, the posterior distributions of the fitted values is specified by the samples $\{x(s_i)^T \beta^{(l)} + w(s_i)^{(l)}\}$ and $\{x(s_i)^T \beta^{(l)}\}$, respectively, where $\beta^{(l)}$ is the $l^{th}$ post burn-in sample. For the MCMC-free conjugate model, the closed-form expressions for the posterior means for $\beta$ and $\sigma^2$ for the fitted value are in **Algorithm 5** in Finley et al. (2019). 
+
+The algorithm for prediction for the latent, response, and MCMC-free conjugate model is presented in **Algorithm 2**, **4**, and **5**, respectively, in Finley et al. (2019). 
+
 ## 3.5. Software 
 
 Functions in the **R** package `spNNGP` is written in **C/C++** via **R**'s foreign language interface to call **Fortran** Basic Linear Algebra Subprograms (`BLAS`; www.netlib.org/blas), e.g., `openBLAS` (Zhang, 2016), and Linear Algebra Package (`LAPACK`; www.netlib.org/lapack) for computationally intensive matrix operations and uses **openMP** (Dagum & Menon, 1998) for parallelization (Finley et al., 2019; Finley et al., 2021). 
@@ -246,6 +252,8 @@ Functions in the **R** package `spNNGP` is written in **C/C++** via **R**'s fore
 (1) This project reviews NNGP models formation and `spNNGP` **R** package usage in Finley et al., (2021). However, algorithmic details as well as where and how parallelization is used in each algorithm are not well explored but can be referred to Finley et al., (2019). 
 
 (2) NNGP models assume Gaussian response. Exploiting the Pólya-Gamma data-augmented sampler of Polson et al. (2013), the latent NNGP model can be extended to model non-Gaussian (i.e. binary) response (Finley et al., 2021). Future study could look into extending the latent NNGP model or consider alternative models such as the GGP (generalized Gaussian process) model (Zilber & Katzfuss, 2021) via Vecchia-Laplace approximation or NNMP (nearest neighbor mixture process) model (Zheng, et al., 2022; Zheng, 2022) for other non-Gaussian response such as count, zero-inflated count, zero-inflated semicontinuous, etc. data. 
+
+(3) For *Section 4*, 
 
 \newpage 
 
