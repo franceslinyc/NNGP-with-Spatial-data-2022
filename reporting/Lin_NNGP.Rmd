@@ -149,7 +149,7 @@ where $\theta = \{ \sigma^2, \phi, \nu \}$ for Matérn covariance function (Finl
 
 A normal prior $N(\mu_{\beta}, V_{\beta})$ is used for $\beta$, inverse-Gamma priors are used for the spatial and noise variances $\sigma^2$ and $\tau^2$, and uniform priors are used for the range and smoothness parameters $1/\phi$ and $\nu$. 
 
-Interested readers are referred to *Section 2.1. Collapsed NNGP* of Finley et al. (2019) for more and **Algorithm 1** and **2** in the same section for algorithmic details, and note that the collapsed NNGP model is not implemented in the `spNNGP` package. 
+Interested readers are referred to *Section 2.1* of Finley et al. (2019) for more and **Algorithm 1** and **2** in the same section for algorithmic details, and note that the collapsed NNGP model is not implemented in the `spNNGP` package. 
 
 
 ## 3.2. NNGP for the Response
@@ -170,7 +170,7 @@ where $\tilde{\Sigma}$ is the NNGP covariance matrix derived from $\Sigma = C(\t
 
 The dimension of the parameter space is reduced from $\mathcal{O}(n)$ to $\mathcal{O}(1)$, and the lower dimensional NNGP tends to have improved MCMC convergence (Finley et al., 2019, as cited in Finely et al., 2021). 
 
-Interested readers are referred to **Algorithm 3** and **4** in *Section 2.2. NNGP for the Response* of Finley et al. (2019) for algorithmic details. 
+Interested readers are referred to **Algorithm 3** and **4** in *Section 2.2* of Finley et al. (2019) for algorithmic details. 
 
 ## 3.3. MCMC-Free Exact Bayesian Inference Using Conjugate NNGP 
 
@@ -182,7 +182,7 @@ Recall that $\Sigma$ of the GP marginal model in Section 3.2. is given as
 $$
 \Sigma = \Sigma(s_i, s_j) = C(s_i, s_j | \theta) + \tau^2 \delta(s_i, s_j), 
 $$
-express the covariance function $C(\cdot, \cdot| \theta)$ as $\sigma^2 R(\cdot, \cdot | \phi)$, where $\sigma^2$ is the marginal variance and $R$ is the correlation function parameterized by $\phi$, i.e., $\theta = \{ \sigma^2, \phi \}$, and rewrite $\tau^2 = \alpha \sigma^2$, then 
+express the covariance function $C(\cdot, \cdot| \theta)$ as $\sigma^2 R(\cdot, \cdot | \phi)$, where $\sigma^2$ is the marginal variance and $R$ is the correlation function parameterized by the range $\phi$, i.e., $\theta = \{ \sigma^2, \phi \}$, and rewrite $\tau^2 = \alpha \sigma^2$, then 
 $$
 \Sigma = \Sigma(s_i, s_j) = \sigma^2 R(s_i, s_j | \phi) + \alpha \sigma^2 \delta(s_i, s_j)
 $$
@@ -226,6 +226,8 @@ $$
 \sigma^2 | y \sim IG (a_\sigma^*, b_\sigma^*), 
 $$
 where $MVS_{t_{\kappa}} (B^{-1} b, (b / a) B^{-1})$ denotes the multivariate noncentral Student's $t$ distribution with degrees of freedom $\kappa$, mean $B^{-1} b$ and variance $b B^{-1} / (a - 1)$. The marginal posterior mean and variance for $\sigma^2$ are $b_\sigma^* / (a_\sigma^* - 1)$ and $b_\sigma^{2*} / {(a_\sigma^* - 1)}^2 (a_\sigma^* - 2)$, respectively. However, instead of sampling from the posterior distribution (i.e., sample $\sigma^2$ and then sample $\beta$ one-for-one for each $\sigma^2$ drawn), a fast evaluation of the marginal posterior distributions are implemented (Finley et al., 2019). 
+
+Interested readers are again referred to **Algorithm 5** in *Section 2.3* of Finley et al. (2019) for algorithmic details. 
 
 ## 3.4. Fitted values, replicate data for model checking and evaluation, and predictions
 
