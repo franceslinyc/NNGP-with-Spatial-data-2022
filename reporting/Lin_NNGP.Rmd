@@ -18,7 +18,7 @@ On the other hand, while the original NNGP (nearest neighbor Gaussian process) m
 
 Three alternate formulations of the NNGP model that are more efficient and practical than the latent NNGP model (2016) are proposed: (1) the collapsed NNGP model, (2) the response NNGP model, and (3) the conjugate NNGP model, and these models are accessible through the `R` package `spNNGP` (Finley et al., 2019; Finley et al., 2021). 
 
-*Section 2* reviews Gaussian process (GP) and formulates nearest neighbor Gaussian process (NNGP) through graphical models. *Section 3* introduces the latent NNGP model, which is followed by three alternate formulations of the latent NNGP model: (1) a collapsed NNGP model, (2) a NNGP model for the response (with no latent process), and (3) a conjugate NNGP model that allows for MCMC-free exact inference. *Section 4* considers the simulated data set and real data set in `spNNGP` package, but details are included in the *Appendix*. *Section 5* includes the discussion. 
+*Section 2* reviews Gaussian process (GP) and formulates nearest neighbor Gaussian process (NNGP) through graphical models. *Section 3* introduces the latent NNGP model, which is followed by three alternate formulations of the latent NNGP model: (1) a collapsed NNGP model, (2) a NNGP model for the response (with no latent process), and (3) a conjugate NNGP model that allows for MCMC-free exact inference. *Section 4* considers the simulated data set and real data set in the `spNNGP` package and uses the package and/or hpc (high performance computing) cluster at OSU to compare run time and replicate results, but details are included in the *Appendix*. *Section 5* includes the discussion. 
 
 # 2. Nearest Neighbor Gaussian Processes
 
@@ -249,11 +249,14 @@ Functions in the **R** package `spNNGP` is written in **C/C++** via **R**'s fore
 
 # 5. Discussion
 
-(1) This project reviews NNGP models formation and `spNNGP` **R** package usage in Finley et al., (2021). However, algorithmic details as well as where and how parallelization is used in each algorithm are not well explored but can be referred to Finley et al., (2019). 
+(1) This project reviews the NNGP models formation and  replicates results in Finley et al. (2021) using the `spNNGP` **R** package and hpc cluster at OSU. However, algorithmic details as well as where and how parallelization is used in each algorithm are not well explored but can be referred to Finley et al. (2019) for more. 
 
 (2) NNGP models assume Gaussian response. Exploiting the Pólya-Gamma data-augmented sampler of Polson et al. (2013), the latent NNGP model can be extended to model non-Gaussian (i.e. binary) response (Finley et al., 2021). Future study could look into extending the latent NNGP model or consider alternative models such as the GGP (generalized Gaussian process) model (Zilber & Katzfuss, 2021) via Vecchia-Laplace approximation or NNMP (nearest neighbor mixture process) model (Zheng, et al., 2022; Zheng, 2022) for other non-Gaussian response such as count, zero-inflated count, zero-inflated semicontinuous, etc. data. 
 
-(3) For *Section 4*, 
+(3) For the simulated data set, 
+, but run time as a function of sample size is approximately linear. 
+
+(4) Since enabling **openMP** on a macOS laptop took weeks but it did not provide much computational advantages even when being enabled, for the real data set, we decide to run the models on a hpc cluster.   
 
 \newpage 
 
