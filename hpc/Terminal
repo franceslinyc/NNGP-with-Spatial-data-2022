@@ -1,0 +1,43 @@
+# Open Terminal and replace linyuchu with your own ID to log in 
+ssh linyuchu@submit.hpc.cosine.oregonstate.edu
+
+
+# Set directory 
+cd NNGP/real_data
+
+
+# Submit job
+qsub fit_spConjNNGP_real.sh
+
+qsub fit_spNNGP_response_real.sh
+
+qsub fit_spNNGP_latent_real.sh
+
+qsub fit_spConjNNGP_real_set_seed.sh
+
+qsub fit_spConjNNGP_real_without_holdout.sh 
+
+qsub fit_spConjNNGP_real_random.sh
+
+
+# Make sure to click Refresh on Cyberduck
+
+
+# Install package in R 
+
+# Exit by typing exit 
+
+# Re-log in following the above step 
+
+# Before setting directory, type R 
+
+# Type in R 
+install.packages("tidyverse") 
+
+# Select a CRAN mirror 
+
+# Quit R 
+quit 
+
+# Don't forget to include library(tidyverse) in r file 
+
