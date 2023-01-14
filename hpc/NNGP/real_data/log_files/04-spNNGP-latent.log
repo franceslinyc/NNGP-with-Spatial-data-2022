@@ -1,0 +1,222 @@
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Building the neighbor list
+----------------------------------------
+----------------------------------------
+Building the neighbors of neighbors list
+----------------------------------------
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Latent model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 5000.
+
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+	tau.sq IG hyperpriors shape=2.00000 and scale=10.00000
+	phi Unif hyperpriors a=0.30000 and b=30.00000
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+----------------------------------------
+		Sampling
+----------------------------------------
+Sampled: 2500 of 5000, 50.00%
+Report interval Metrop. Acceptance rate: 46.60%
+Overall Metrop. Acceptance rate: 46.60%
+-------------------------------------------------
+Sampled: 5000 of 5000, 100.00%
+Report interval Metrop. Acceptance rate: 47.28%
+Overall Metrop. Acceptance rate: 46.94%
+-------------------------------------------------
+Time difference of 35.28011 mins
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Building the neighbor list
+----------------------------------------
+----------------------------------------
+Building the neighbors of neighbors list
+----------------------------------------
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Latent model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 5000.
+
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+	tau.sq IG hyperpriors shape=2.00000 and scale=10.00000
+	phi Unif hyperpriors a=0.30000 and b=30.00000
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+----------------------------------------
+		Sampling
+----------------------------------------
+Sampled: 2500 of 5000, 50.00%
+Report interval Metrop. Acceptance rate: 44.64%
+Overall Metrop. Acceptance rate: 44.64%
+-------------------------------------------------
+Sampled: 5000 of 5000, 100.00%
+Report interval Metrop. Acceptance rate: 48.92%
+Overall Metrop. Acceptance rate: 46.78%
+-------------------------------------------------
+Time difference of 35.51187 mins
+
+Call:
+spNNGP(formula = FCH ~ PTC, data = BCEF.mod, coords = c("x", 
+    "y"), method = "latent", n.neighbors = 10, starting = starting, 
+    tuning = tuning, priors = priors, cov.model = cov.model, 
+    n.samples = n.samples, n.omp.threads = 40, fit.rep = TRUE, 
+    sub.sample = list(start = 4000, thin = 10), n.report = 2500)
+
+Model class is NNGP, method latent, family gaussian.
+
+Model object contains 5000 MCMC samples.
+
+Chain sub.sample:
+start = 2500
+end = 5000
+thin = 1
+samples size = 2501
+            2.5%    25%     50%     75%     97.5%  
+(Intercept) 11.3656 11.6702 12.1382 12.6710 13.2853
+PTC         0.0166  0.0181  0.0190  0.0198  0.0214 
+sigma.sq    44.2719 45.7746 46.8707 47.6175 48.6998
+tau.sq      2.5694  2.6110  2.6378  2.6702  2.7351 
+phi         7.5510  7.7738  7.9121  8.0740  8.3591 
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Building the neighbor list
+----------------------------------------
+----------------------------------------
+Building the neighbors of neighbors list
+----------------------------------------
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Latent model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 5000.
+
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+	tau.sq IG hyperpriors shape=2.00000 and scale=10.00000
+	phi Unif hyperpriors a=0.30000 and b=30.00000
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+----------------------------------------
+		Sampling
+----------------------------------------
+Sampled: 2500 of 5000, 50.00%
+Report interval Metrop. Acceptance rate: 46.16%
+Overall Metrop. Acceptance rate: 46.16%
+-------------------------------------------------
+Sampled: 5000 of 5000, 100.00%
+Report interval Metrop. Acceptance rate: 49.56%
+Overall Metrop. Acceptance rate: 47.86%
+-------------------------------------------------
+Time difference of 31.57727 mins
+ [1] "p.beta.samples"  "p.theta.samples" "p.w.samples"     "run.time"       
+ [5] "coords"          "y"               "X"               "weights"        
+ [9] "y.hat.samples"   "y.hat.quants"    "y.rep.samples"   "y.rep.quants"   
+[13] "sub.sample"      "s.indx"          "n.neighbors"     "cov.model"      
+[17] "cov.model.indx"  "call"            "starting"        "priors"         
+[21] "tuning"          "type"           
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Building the neighbor list
+----------------------------------------
+----------------------------------------
+Building the neighbors of neighbors list
+----------------------------------------
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Latent model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 5000.
+
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+	tau.sq IG hyperpriors shape=2.00000 and scale=10.00000
+	phi Unif hyperpriors a=0.30000 and b=30.00000
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+----------------------------------------
+		Sampling
+----------------------------------------
+Sampled: 2500 of 5000, 50.00%
+Report interval Metrop. Acceptance rate: 46.08%
+Overall Metrop. Acceptance rate: 46.08%
+-------------------------------------------------
+Sampled: 5000 of 5000, 100.00%
+Report interval Metrop. Acceptance rate: 46.24%
+Overall Metrop. Acceptance rate: 46.16%
+-------------------------------------------------
+Time difference of 31.56155 mins
+
+Call:
+spNNGP(formula = FCH ~ PTC, data = BCEF.mod, coords = c("x", 
+    "y"), method = "latent", n.neighbors = 10, starting = starting, 
+    tuning = tuning, priors = priors, cov.model = cov.model, 
+    n.samples = n.samples, n.omp.threads = 40, fit.rep = TRUE, 
+    sub.sample = list(start = 4000, thin = 10), n.report = 2500)
+
+Model class is NNGP, method latent, family gaussian.
+
+Model object contains 5000 MCMC samples.
+
+Chain sub.sample:
+start = 2500
+end = 5000
+thin = 1
+samples size = 2501
+            2.5%    25%     50%     75%     97.5%  
+(Intercept) 11.2289 11.4736 12.0191 12.5899 13.0186
+PTC         0.0171  0.0187  0.0197  0.0206  0.0222 
+sigma.sq    43.1446 44.5440 45.2673 45.9834 46.9030
+tau.sq      2.5551  2.6052  2.6303  2.6573  2.7190 
+phi         7.8778  8.0790  8.1862  8.3297  8.5599 
+ [1] "p.beta.samples"  "p.theta.samples" "p.w.samples"     "run.time"       
+ [5] "coords"          "y"               "X"               "weights"        
+ [9] "y.hat.samples"   "y.hat.quants"    "y.rep.samples"   "y.rep.quants"   
+[13] "sub.sample"      "s.indx"          "n.neighbors"     "cov.model"      
+[17] "cov.model.indx"  "call"            "starting"        "priors"         
+[21] "tuning"          "type"           

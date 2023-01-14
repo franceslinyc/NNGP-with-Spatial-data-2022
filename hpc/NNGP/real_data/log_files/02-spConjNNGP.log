@@ -1,0 +1,669 @@
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+Error in spConjNNGP(FCH ~ PTC, coords = c("x", "y"), data = BCEF.mod,  : 
+  object 'theta.alpha' not found
+Execution halted
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+
+Call:
+spConjNNGP(formula = FCH ~ PTC, data = BCEF.mod, coords = c("x", 
+    "y"), n.neighbors = 10, theta.alpha = theta.alpha, sigma.sq.IG = c(2, 
+    40), cov.model = "exponential", k.fold = 2, score.rule = "crps", 
+    n.omp.threads = 64, fit.rep = TRUE, n.samples = 200, verbose = FALSE)
+
+Model class is NNGP, method conjugate, family gaussian.
+Time difference of 4.332827 mins
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Starting k-fold
+----------------------------------------
+
+  |                                    
+  |                              |   0%
+  |                                    
+  |***************               |  50%
+  |                                    
+  |******************************| 100%
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Conjugate model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+------------
+	Estimation for parameter set(s)
+Set phi=13.02857 and alpha=0.10000
+----------------------------------------
+	Computing replicates
+----------------------------------------
+NNGP Response model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 200.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+		Sampling
+Sampled: 100 of 200, 50.00%
+Sampled: 200 of 200, 100.00%
+Time difference of 4.657351 mins
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Starting k-fold
+----------------------------------------
+  |                                      |                              |   0%  |                                      |***************               |  50%  |                                      |******************************| 100%
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Conjugate model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+------------
+	Estimation for parameter set(s)
+Set phi=13.02857 and alpha=0.10000
+----------------------------------------
+	Computing replicates
+----------------------------------------
+NNGP Response model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 200.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+		Sampling
+Sampled: 100 of 200, 50.00%
+Sampled: 200 of 200, 100.00%
+Time difference of 2.998608 mins
+
+Call:
+spConjNNGP(formula = FCH ~ PTC, data = BCEF.mod, coords = c("x", 
+    "y"), n.neighbors = 10, theta.alpha = theta.alpha, sigma.sq.IG = c(2, 
+    40), cov.model = "exponential", k.fold = 2, score.rule = "crps", 
+    n.omp.threads = 40, fit.rep = TRUE, n.samples = 200)
+
+Model class is NNGP, method conjugate, family gaussian.
+
+            Estimate Variance
+(Intercept) 10.3945  0.0250  
+PTC         0.0273   0.0000  
+sigma.sq    28.1389  0.0084  
+phi         13.0286  0.0000  
+alpha       0.1000   0.0000  
+
+samples size = 200
+            2.5%    25%     50%     75%     97.5%  
+(Intercept) 10.0648 10.2664 10.3785 10.4837 10.6783
+PTC         0.0251  0.0264  0.0275  0.0283  0.0302 
+sigma.sq    27.9663 28.0875 28.1368 28.2006 28.2991
+tau.sq      2.7966  2.8087  2.8137  2.8201  2.8299 
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Starting k-fold
+----------------------------------------
+  |                                      |                              |   0%  |                                      |***************               |  50%  |                                      |******************************| 100%
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Conjugate model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+------------
+	Estimation for parameter set(s)
+Set phi=13.02857 and alpha=0.10000
+----------------------------------------
+	Computing replicates
+----------------------------------------
+NNGP Response model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 200.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+		Sampling
+Sampled: 100 of 200, 50.00%
+Sampled: 200 of 200, 100.00%
+Time difference of 2.871248 mins
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Starting k-fold
+----------------------------------------
+  |                                      |                              |   0%  |                                      |***************               |  50%  |                                      |******************************| 100%
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Conjugate model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+------------
+	Estimation for parameter set(s)
+Set phi=13.02857 and alpha=0.10000
+----------------------------------------
+	Computing replicates
+----------------------------------------
+NNGP Response model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 200.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+		Sampling
+Sampled: 100 of 200, 50.00%
+Sampled: 200 of 200, 100.00%
+Time difference of 2.862502 mins
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Starting k-fold
+----------------------------------------
+  |                                      |                              |   0%  |                                      |***************               |  50%  |                                      |******************************| 100%
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Conjugate model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+------------
+	Estimation for parameter set(s)
+Set phi=13.02857 and alpha=0.10000
+----------------------------------------
+	Computing replicates
+----------------------------------------
+NNGP Response model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 200.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+		Sampling
+Sampled: 100 of 200, 50.00%
+Sampled: 200 of 200, 100.00%
+Time difference of 2.808325 mins
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Starting k-fold
+----------------------------------------
+  |                                      |                              |   0%  |                                      |***************               |  50%  |                                      |******************************| 100%
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Conjugate model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+------------
+	Estimation for parameter set(s)
+Set phi=13.02857 and alpha=0.10000
+----------------------------------------
+	Computing replicates
+----------------------------------------
+NNGP Response model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 200.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+		Sampling
+Sampled: 100 of 200, 50.00%
+Sampled: 200 of 200, 100.00%
+Time difference of 1.867594 mins
+
+Call:
+spConjNNGP(formula = FCH ~ PTC, data = BCEF.mod, coords = c("x", 
+    "y"), n.neighbors = 10, theta.alpha = theta.alpha, sigma.sq.IG = c(2, 
+    40), cov.model = "exponential", k.fold = 2, score.rule = "crps", 
+    n.omp.threads = 40, fit.rep = TRUE, n.samples = 200)
+
+Model class is NNGP, method conjugate, family gaussian.
+
+            Estimate Variance
+(Intercept) 10.3945  0.0250  
+PTC         0.0273   0.0000  
+sigma.sq    28.1389  0.0084  
+phi         13.0286  0.0000  
+alpha       0.1000   0.0000  
+
+samples size = 200
+            2.5%    25%     50%     75%     97.5%  
+(Intercept) 10.0641 10.2852 10.3995 10.5238 10.7041
+PTC         0.0249  0.0263  0.0272  0.0282  0.0299 
+sigma.sq    27.9439 28.0735 28.1425 28.2150 28.3161
+tau.sq      2.7944  2.8073  2.8142  2.8215  2.8316 
+ [1] "beta.hat"             "ab"                   "bB.inv"              
+ [4] "bb"                   "run.time"             "theta.alpha"         
+ [7] "sigma.sq.hat"         "sigma.sq.var"         "beta.var"            
+[10] "sigma.sq.IG"          "n.neighbors"          "cov.model"           
+[13] "cov.model.indx"       "search.type"          "call"                
+[16] "k.fold.scores"        "neighbor.info"        "p.beta.theta.samples"
+[19] "y.hat.samples"        "y.hat.quants"         "y.rep.samples"       
+[22] "y.rep.quants"         "sub.sample"           "s.indx"              
+[25] "coords"               "y"                    "X"                   
+[28] "type"                
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Starting k-fold
+----------------------------------------
+  |                                      |                              |   0%  |                                      |***************               |  50%  |                                      |******************************| 100%
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Conjugate model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+------------
+	Estimation for parameter set(s)
+Set phi=13.02857 and alpha=0.10000
+----------------------------------------
+	Computing replicates
+----------------------------------------
+NNGP Response model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 200.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+		Sampling
+Sampled: 100 of 200, 50.00%
+Sampled: 200 of 200, 100.00%
+Time difference of 1.93649 mins
+
+Call:
+spConjNNGP(formula = FCH ~ PTC, data = BCEF.mod, coords = c("x", 
+    "y"), n.neighbors = 10, theta.alpha = theta.alpha, sigma.sq.IG = c(2, 
+    40), cov.model = "exponential", k.fold = 2, score.rule = "crps", 
+    n.omp.threads = 40, fit.rep = TRUE, n.samples = 200)
+
+Model class is NNGP, method conjugate, family gaussian.
+
+            Estimate Variance
+(Intercept) 10.3945  0.0250  
+PTC         0.0273   0.0000  
+sigma.sq    28.1389  0.0084  
+phi         13.0286  0.0000  
+alpha       0.1000   0.0000  
+
+samples size = 200
+            2.5%    25%     50%     75%     97.5%  
+(Intercept) 10.1269 10.3131 10.4115 10.5062 10.7162
+PTC         0.0246  0.0265  0.0272  0.0282  0.0301 
+sigma.sq    27.9776 28.0786 28.1381 28.1876 28.3019
+tau.sq      2.7978  2.8079  2.8138  2.8188  2.8302 
+ [1] "beta.hat"             "ab"                   "bB.inv"              
+ [4] "bb"                   "run.time"             "theta.alpha"         
+ [7] "sigma.sq.hat"         "sigma.sq.var"         "beta.var"            
+[10] "sigma.sq.IG"          "n.neighbors"          "cov.model"           
+[13] "cov.model.indx"       "search.type"          "call"                
+[16] "k.fold.scores"        "neighbor.info"        "p.beta.theta.samples"
+[19] "y.hat.samples"        "y.hat.quants"         "y.rep.samples"       
+[22] "y.rep.quants"         "sub.sample"           "s.indx"              
+[25] "coords"               "y"                    "X"                   
+[28] "type"                
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+Error: unexpected symbol in "set. seed"
+Execution halted
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Starting k-fold
+----------------------------------------
+  |                                      |                              |   0%  |                                      |***************               |  50%  |                                      |******************************| 100%
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Conjugate model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+------------
+	Estimation for parameter set(s)
+Set phi=13.02857 and alpha=0.10000
+----------------------------------------
+	Computing replicates
+----------------------------------------
+NNGP Response model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 200.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+		Sampling
+Sampled: 100 of 200, 50.00%
+Sampled: 200 of 200, 100.00%
+Time difference of 2.978623 mins
+
+Call:
+spConjNNGP(formula = FCH ~ PTC, data = BCEF.mod, coords = c("x", 
+    "y"), n.neighbors = 10, theta.alpha = theta.alpha, sigma.sq.IG = c(2, 
+    40), cov.model = "exponential", k.fold = 2, score.rule = "crps", 
+    n.omp.threads = 40, fit.rep = TRUE, n.samples = 200)
+
+Model class is NNGP, method conjugate, family gaussian.
+
+            Estimate Variance
+(Intercept) 10.3945  0.0250  
+PTC         0.0273   0.0000  
+sigma.sq    28.1389  0.0084  
+phi         13.0286  0.0000  
+alpha       0.1000   0.0000  
+
+samples size = 200
+            2.5%    25%     50%     75%     97.5%  
+(Intercept) 10.0969 10.3158 10.4062 10.5258 10.6967
+PTC         0.0244  0.0265  0.0273  0.0282  0.0297 
+sigma.sq    27.9620 28.0771 28.1315 28.1873 28.3112
+tau.sq      2.7962  2.8077  2.8131  2.8187  2.8311 
+ [1] "beta.hat"             "ab"                   "bB.inv"              
+ [4] "bb"                   "run.time"             "theta.alpha"         
+ [7] "sigma.sq.hat"         "sigma.sq.var"         "beta.var"            
+[10] "sigma.sq.IG"          "n.neighbors"          "cov.model"           
+[13] "cov.model.indx"       "search.type"          "call"                
+[16] "k.fold.scores"        "neighbor.info"        "p.beta.theta.samples"
+[19] "y.hat.samples"        "y.hat.quants"         "y.rep.samples"       
+[22] "y.rep.quants"         "sub.sample"           "s.indx"              
+[25] "coords"               "y"                    "X"                   
+[28] "type"                
+── Attaching packages ─────────────────────────────────────── tidyverse 1.3.2 ──
+✔ ggplot2 3.4.0      ✔ purrr   1.0.0 
+✔ tibble  3.1.8      ✔ dplyr   1.0.10
+✔ tidyr   1.2.1      ✔ stringr 1.5.0 
+✔ readr   2.1.3      ✔ forcats 0.5.2 
+── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+✖ dplyr::filter() masks stats::filter()
+✖ dplyr::lag()    masks stats::lag()
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Starting k-fold
+----------------------------------------
+  |                                      |                              |   0%  |                                      |***************               |  50%  |                                      |******************************| 100%
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Conjugate model fit with 105504 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+------------
+	Estimation for parameter set(s)
+Set phi=13.02857 and alpha=0.10000
+----------------------------------------
+	Computing replicates
+----------------------------------------
+NNGP Response model fit with 105504 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 200.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+		Sampling
+Sampled: 100 of 200, 50.00%
+Sampled: 200 of 200, 100.00%
+Time difference of 1.686789 mins
+
+Call:
+spConjNNGP(formula = FCH ~ PTC, data = BCEF.mod, coords = c("x", 
+    "y"), n.neighbors = 10, theta.alpha = theta.alpha, sigma.sq.IG = c(2, 
+    40), cov.model = "exponential", k.fold = 2, score.rule = "crps", 
+    n.omp.threads = 40, fit.rep = TRUE, n.samples = 200)
+
+Model class is NNGP, method conjugate, family gaussian.
+
+            Estimate Variance
+(Intercept) 11.0006  0.0432  
+PTC         0.0229   0.0000  
+sigma.sq    26.7551  0.0136  
+phi         13.0286  0.0000  
+alpha       0.1000   0.0000  
+
+samples size = 200
+            2.5%    25%     50%     75%     97.5%  
+(Intercept) 10.5856 10.8057 10.9740 11.1510 11.4671
+PTC         0.0191  0.0217  0.0229  0.0244  0.0266 
+sigma.sq    26.5352 26.6904 26.7719 26.8426 27.0006
+tau.sq      2.6535  2.6690  2.6772  2.6843  2.7001 
+ [1] "beta.hat"             "ab"                   "bB.inv"              
+ [4] "bb"                   "run.time"             "theta.alpha"         
+ [7] "sigma.sq.hat"         "sigma.sq.var"         "beta.var"            
+[10] "sigma.sq.IG"          "n.neighbors"          "cov.model"           
+[13] "cov.model.indx"       "search.type"          "call"                
+[16] "k.fold.scores"        "neighbor.info"        "p.beta.theta.samples"
+[19] "y.hat.samples"        "y.hat.quants"         "y.rep.samples"       
+[22] "y.rep.quants"         "sub.sample"           "s.indx"              
+[25] "coords"               "y"                    "X"                   
+[28] "type"                
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Starting k-fold
+----------------------------------------
+  |                                      |                              |   0%  |                                      |***************               |  50%  |                                      |******************************| 100%
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Conjugate model fit with 100000 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+------------
+	Estimation for parameter set(s)
+Set phi=8.78571 and alpha=0.10000
+----------------------------------------
+	Computing replicates
+----------------------------------------
+NNGP Response model fit with 100000 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 200.
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+------------
+		Sampling
+Sampled: 100 of 200, 50.00%
+Sampled: 200 of 200, 100.00%
+Time difference of 1.616871 mins
+
+Call:
+spConjNNGP(formula = FCH ~ PTC, data = BCEF.mod, coords = c("x", 
+    "y"), n.neighbors = 10, theta.alpha = theta.alpha, sigma.sq.IG = c(2, 
+    40), cov.model = "exponential", k.fold = 2, score.rule = "crps", 
+    n.omp.threads = 40, fit.rep = TRUE, n.samples = 200)
+
+Model class is NNGP, method conjugate, family gaussian.
+
+            Estimate Variance
+(Intercept) 10.1422  0.0469  
+PTC         0.0362   0.0000  
+sigma.sq    34.7285  0.0241  
+phi         8.7857   0.0000  
+alpha       0.1000   0.0000  
+
+samples size = 200
+            2.5%    25%     50%     75%     97.5%  
+(Intercept) 9.7212  9.9831  10.1382 10.2753 10.5365
+PTC         0.0333  0.0352  0.0363  0.0373  0.0392 
+sigma.sq    34.4394 34.6505 34.7309 34.8211 34.9960
+tau.sq      3.4439  3.4651  3.4731  3.4821  3.4996 
+ [1] "beta.hat"             "ab"                   "bB.inv"              
+ [4] "bb"                   "run.time"             "theta.alpha"         
+ [7] "sigma.sq.hat"         "sigma.sq.var"         "beta.var"            
+[10] "sigma.sq.IG"          "n.neighbors"          "cov.model"           
+[13] "cov.model.indx"       "search.type"          "call"                
+[16] "k.fold.scores"        "neighbor.info"        "p.beta.theta.samples"
+[19] "y.hat.samples"        "y.hat.quants"         "y.rep.samples"       
+[22] "y.rep.quants"         "sub.sample"           "s.indx"              
+[25] "coords"               "y"                    "X"                   
+[28] "type"                

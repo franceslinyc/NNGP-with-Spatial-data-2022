@@ -1,0 +1,239 @@
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Building the neighbor list
+----------------------------------------
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Response model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 15 nearest neighbors.
+
+Number of MCMC samples 5000.
+
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+	tau.sq IG hyperpriors shape=2.00000 and scale=10.00000
+	phi Unif hyperpriors a=0.30000 and b=30.00000
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+----------------------------------------
+		Sampling
+----------------------------------------
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Building the neighbor list
+----------------------------------------
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Response model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 5000.
+
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+	tau.sq IG hyperpriors shape=2.00000 and scale=10.00000
+	phi Unif hyperpriors a=0.30000 and b=30.00000
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+----------------------------------------
+		Sampling
+----------------------------------------
+Sampled: 2500 of 5000, 50.00%
+Report interval Metrop. Acceptance rate: 43.88%
+Overall Metrop. Acceptance rate: 43.88%
+-------------------------------------------------
+Sampled: 5000 of 5000, 100.00%
+Report interval Metrop. Acceptance rate: 40.12%
+Overall Metrop. Acceptance rate: 42.00%
+-------------------------------------------------
+Time difference of 30.94398 mins
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Building the neighbor list
+----------------------------------------
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Response model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 5000.
+
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+	tau.sq IG hyperpriors shape=2.00000 and scale=10.00000
+	phi Unif hyperpriors a=0.30000 and b=30.00000
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+----------------------------------------
+		Sampling
+----------------------------------------
+Sampled: 2500 of 5000, 50.00%
+Report interval Metrop. Acceptance rate: 43.48%
+Overall Metrop. Acceptance rate: 43.48%
+-------------------------------------------------
+Sampled: 5000 of 5000, 100.00%
+Report interval Metrop. Acceptance rate: 39.12%
+Overall Metrop. Acceptance rate: 41.30%
+-------------------------------------------------
+Time difference of 31.15357 mins
+
+Call:
+spNNGP(formula = FCH ~ PTC, data = BCEF.mod, coords = c("x", 
+    "y"), method = "response", n.neighbors = 10, starting = starting, 
+    tuning = tuning, priors = priors, cov.model = cov.model, 
+    n.samples = n.samples, n.omp.threads = 40, fit.rep = TRUE, 
+    sub.sample = list(start = 4000, thin = 10), n.report = 2500)
+
+Model class is NNGP, method response, family gaussian.
+
+Model object contains 5000 MCMC samples.
+
+Chain sub.sample:
+start = 2500
+end = 5000
+thin = 1
+samples size = 2501
+            2.5%    25%     50%     75%     97.5%  
+(Intercept) 8.0186  8.3946  8.5746  8.7691  9.1128 
+PTC         0.0170  0.0187  0.0196  0.0206  0.0224 
+sigma.sq    43.2215 44.2576 45.2002 45.9667 47.3847
+tau.sq      2.5862  2.6294  2.6537  2.6775  2.7193 
+phi         7.7381  8.0013  8.1284  8.3266  8.5403 
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Building the neighbor list
+----------------------------------------
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Response model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 5000.
+
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+	tau.sq IG hyperpriors shape=2.00000 and scale=10.00000
+	phi Unif hyperpriors a=0.30000 and b=30.00000
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+----------------------------------------
+		Sampling
+----------------------------------------
+Sampled: 2500 of 5000, 50.00%
+Report interval Metrop. Acceptance rate: 44.68%
+Overall Metrop. Acceptance rate: 44.68%
+-------------------------------------------------
+Sampled: 5000 of 5000, 100.00%
+Report interval Metrop. Acceptance rate: 40.56%
+Overall Metrop. Acceptance rate: 42.62%
+-------------------------------------------------
+Time difference of 27.39297 mins
+ [1] "p.beta.samples"  "p.theta.samples" "y.rep.samples"   "run.time"       
+ [5] "coords"          "y"               "X"               "weights"        
+ [9] "y.hat.samples"   "y.hat.quants"    "y.rep.quants"    "sub.sample"     
+[13] "s.indx"          "n.neighbors"     "cov.model"       "cov.model.indx" 
+[17] "call"            "starting"        "priors"          "tuning"         
+[21] "type"           
+Loading required package: coda
+Loading required package: Formula
+Loading required package: RANN
+----------------------------------------
+	Building the neighbor list
+----------------------------------------
+----------------------------------------
+	Model description
+----------------------------------------
+NNGP Response model fit with 188717 observations.
+
+Number of covariates 2 (including intercept if specified).
+
+Using the exponential spatial correlation model.
+
+Using 10 nearest neighbors.
+
+Number of MCMC samples 5000.
+
+Priors and hyperpriors:
+	beta flat.
+	sigma.sq IG hyperpriors shape=2.00000 and scale=40.00000
+	tau.sq IG hyperpriors shape=2.00000 and scale=10.00000
+	phi Unif hyperpriors a=0.30000 and b=30.00000
+
+Source compiled with OpenMP support and model fit using 40 thread(s).
+----------------------------------------
+		Sampling
+----------------------------------------
+Sampled: 2500 of 5000, 50.00%
+Report interval Metrop. Acceptance rate: 43.80%
+Overall Metrop. Acceptance rate: 43.80%
+-------------------------------------------------
+Sampled: 5000 of 5000, 100.00%
+Report interval Metrop. Acceptance rate: 41.24%
+Overall Metrop. Acceptance rate: 42.52%
+-------------------------------------------------
+Time difference of 27.32516 mins
+
+Call:
+spNNGP(formula = FCH ~ PTC, data = BCEF.mod, coords = c("x", 
+    "y"), method = "response", n.neighbors = 10, starting = starting, 
+    tuning = tuning, priors = priors, cov.model = cov.model, 
+    n.samples = n.samples, n.omp.threads = 40, fit.rep = TRUE, 
+    sub.sample = list(start = 4000, thin = 10), n.report = 2500)
+
+Model class is NNGP, method response, family gaussian.
+
+Model object contains 5000 MCMC samples.
+
+Chain sub.sample:
+start = 2500
+end = 5000
+thin = 1
+samples size = 2501
+            2.5%    25%     50%     75%     97.5%  
+(Intercept) 8.0421  8.4367  8.6231  8.8056  9.1256 
+PTC         0.0170  0.0188  0.0198  0.0206  0.0225 
+sigma.sq    42.7693 44.0362 44.7424 45.6220 47.1369
+tau.sq      2.5766  2.6210  2.6526  2.6842  2.7198 
+phi         7.7333  8.0411  8.2229  8.3857  8.6786 
+ [1] "p.beta.samples"  "p.theta.samples" "y.rep.samples"   "run.time"       
+ [5] "coords"          "y"               "X"               "weights"        
+ [9] "y.hat.samples"   "y.hat.quants"    "y.rep.quants"    "sub.sample"     
+[13] "s.indx"          "n.neighbors"     "cov.model"       "cov.model.indx" 
+[17] "call"            "starting"        "priors"          "tuning"         
+[21] "type"           
