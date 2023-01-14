@@ -12,6 +12,7 @@ Expand the NNGP (nearest-neighbor Gaussian process) models (two MCMC-based model
 
 Report can be found [here](https://github.com/franceslinyc/NNGP-with-Spatial-data-2022/blob/main/reporting/Lin_NNGP.pdf). Spatial analyses can be found in the analysis folder.
 
+Instructions of using the hpc cluster including r codes and log files are in the hpc folder. 
 
 ## Reference 
 
