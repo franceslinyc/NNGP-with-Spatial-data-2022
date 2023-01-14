@@ -14,7 +14,7 @@ Report can be found [here](https://github.com/franceslinyc/NNGP-with-Spatial-dat
 
 Spatial analyses can be found in the [analysis](https://github.com/franceslinyc/NNGP-with-Spatial-data-2022/tree/main/analysis) folder.
 
-Instructions of using the hpc cluster including r codes and log files are in the [hpc](https://github.com/franceslinyc/NNGP-with-Spatial-data-2022/tree/main/hpc) folder. 
+Instructions for using the hpc cluster, `r` codes, `sh` files, and `log` files are in the [hpc](https://github.com/franceslinyc/NNGP-with-Spatial-data-2022/tree/main/hpc) folder. 
 
 ## Reference 
 
