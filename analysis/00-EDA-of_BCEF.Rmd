@@ -1,0 +1,184 @@
+---
+title: "00-EDA-of-BCEF"
+author: "Frances Lin"
+output: pdf_document
+---
+
+## Load packages
+
+```{r}
+library(tidyverse)
+library(pander)
+```
+
+```{r}
+library(spNNGP)
+```
+
+```{r}
+library(sf) # Need to update R & RStudio 
+```
+
+## Load data 
+
+```{r}
+data(BCEF)
+```
+
+
+## View data
+
+```{r}
+BCEF %>% str()
+```
+
+Description: 
+
+- response: FCH (forest canopy height)
+
+- covariate: PTC (Landsat derived percent tree cover) 
+
+- x: longtitude 
+
+- y: latitude
+
+
+## Check x (longtitude) & y (latitude)
+
+```{r}
+summary(BCEF$x)
+```
+
+```{r}
+summary(BCEF$y)
+```
+
+Look like p.27 in the Package spNNGP paper? Sort of. 
+
+```{r}
+BCEF %>% ggplot(aes(x = x, y = y)) + geom_point() 
+```
+
+## Check response (FCH)
+
+FCH (forest canopy height) estimates (n = 188717) come from the G-LiHT LiDAR point cloud summarized to a $13$x$13$ m grid cell size (G-LiHT: Goddard’s LiDAR, Hyperspectral & Thermal Imager 2019). 
+
+Over each grid cell, the maximum forest canopy height (i.e., FCH) was estimated using the 100th percentile height of the point cloud. 
+
+```{r}
+summary(BCEF$FCH)
+```
+
+```{r}
+length(BCEF$FCH)
+```
+
+```{r}
+BCEF %>% ggplot(aes(x = FCH)) + geom_histogram()
+```
+
+```{r}
+BCEF %>% ggplot(aes(x = FCH)) + geom_boxplot()
+```
+
+Combine FCH with x and y? Look even much alike now. Still way to go though... 
+
+```{r}
+BCEF %>% ggplot(aes(x = x, y = y, color = FCH)) + geom_point() 
+```
+
+Function `geom_sf()` is used to plot object `sf`. 
+
+```{r}
+# Convert to object sf 
+BCEF_sf <- BCEF %>% st_as_sf(coords = c("x", "y")) 
+BCEF_sf %>% class()
+```
+
+```{r}
+BCEF_sf %>% str()
+```
+
+```{r}
+BCEF_sf %>% st_crs()
+```
+
+Replace FCH with PTC returns similar graph. Look like "the points" are along those lines. 
+
+```{r}
+ggplot(data = BCEF) + 
+  geom_sf(data = BCEF_sf) + 
+  geom_point(aes(x = x, y = y, color = FCH))
+```
+
+Check project INLA. Check function geom_tile or geom_raster. 
+
+```{r}
+library(sp) # Will retire
+BCEF_df <- coordinates(BCEF)
+```
+
+```{r}
+BCEF_df %>% as.data.frame %>% 
+  ggplot(aes(x = x, y = y)) + 
+  geom_tile(aes(fill = FCH)) + 
+  scale_fill_gradient(low = "yellow", high = "blue")
+```
+
+```{r}
+ggplot(BCEF, aes(x = x, y = y, fill = FCH)) +
+  geom_raster()
+```
+
+
+## Check covariate (PTC)
+
+```{r}
+summary(BCEF$PTC)
+```
+
+```{r}
+BCEF %>% ggplot(aes(x = PTC)) + geom_histogram()
+```
+
+```{r}
+BCEF %>% ggplot(aes(x = PTC)) + geom_boxplot()
+```
+
+## Check holdout 
+
+```{r}
+BCEF %>% count(holdout)
+```
+
+## Subset data 
+
+n = 105504 
+
+```{r}
+BCEF %>% filter(holdout == 0)
+```
+
+## Subset data 2
+
+Select n = 100000 randomly from n = 188717
+
+```{r}
+length(BCEF)
+```
+
+```{r}
+# Sample rows 
+set.seed(1234)
+n = 100000
+BCEF[sample(x = nrow(BCEF), size = n), ]
+```
+
+
+
+
+\newpage
+
+## Reference 
+
+[Finley, A. O., Datta, A., & Banerjee, S. (2020). spNNGP R package for nearest neighbor Gaussian process models. arXiv preprint arXiv:2001.09111.](https://arxiv.org/pdf/2001.09111.pdf)
