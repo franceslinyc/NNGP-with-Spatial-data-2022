@@ -6,19 +6,19 @@ output: pdf_document
 header-includes: \usepackage{setspace}\onehalfspacing
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, messaage = FALSE, warning = FALSE)
 ```
 
 # 1. Introduction 
 
-Inferences and predictions on large spatial data or data with locations $\approx 10^6$ have either been too computationally challenging or infeasible. Methods for large spatial data that are under active development. However, most of the existing methods has focused primarily on theoretical and methodological developments. These methods have not paid enough attention on the algorithmic details nor made use of high-performance computing (HPC) libraries to expedite expensive computations and delivery full Bayesian inference for large spatial data (Finley et al., 2019). 
+Inferences and predictions on large spatial data or data with locations $\approx 10^6$ have either been too computationally challenging or infeasible. Methods for large spatial data that are under active development. However, most of the existing methods has focused primarily on theoretical and methodological developments and have not focused enough on the algorithmic details nor made use of high-performance computing (HPC) libraries to expedite expensive computations (Finley et al., 2019). 
 
-On the other hand, while the original NNGP (nearest neighbor Gaussian process) model (Datta et al., 2016), which is also referred to as the latent NNGP model, appears promising, the latent NNGP model is prone to high autocorrelations and slow convergence because the Gibbs sampler involves updating a high-dimensional vector of latent random effect *sequentially*. 
+On the other hand, while the original nearest neighbor Gaussian process (NNGP) model (Datta et al., 2016), which is also referred to as the latent NNGP model, appears promising, the latent NNGP model is prone to high autocorrelations and slow convergence because the Gibbs sampler involves updating a high-dimensional vector of latent random effect *sequentially*. 
 
-Three alternate formulations of the NNGP model that are more efficient and practical than the latent NNGP model (2016) are proposed: (1) the collapsed NNGP model, (2) the response NNGP model, and (3) the conjugate NNGP model, and these models are accessible through the `R` package `spNNGP` (Finley et al., 2019; Finley et al., 2021). 
+Three alternate formulations of the NNGP model that are more efficient and practical than the latent NNGP model (2016) are proposed: (1) the collapsed NNGP model, (2) the response NNGP model, and (3) the conjugate NNGP model, and all except the collapsed model are implemented and can be accessed through the `R` package `spNNGP` (Finley et al., 2019; Finley et al., 2021). 
 
-*Section 2* reviews Gaussian process (GP) and formulates nearest neighbor Gaussian process (NNGP) through graphical models. *Section 3* introduces the latent NNGP model, which is followed by three alternate formulations of the latent NNGP model: (1) a collapsed NNGP model, (2) a NNGP model for the response (with no latent process), and (3) a conjugate NNGP model that allows for MCMC-free exact inference. *Section 4* considers the simulated data set and real data set in the `spNNGP` package and uses the package and/or hpc (high performance computing) cluster at OSU to compare run time and replicate results, but details are included in the *Appendix*. *Section 5* includes the discussion. 
+*Section 2* reviews Gaussian process (GP) and formulates nearest neighbor Gaussian process (NNGP) through graphical models. *Section 3* introduces the latent NNGP model, which is followed by three alternate formulations of the latent NNGP model: (1) a collapsed NNGP model, (2) a NNGP model for the response (with no latent process), and (3) a conjugate NNGP model that allows for MCMC-free exact inference. *Section 4* considers the simulated data set and real data set in the `spNNGP` package and uses the package and/or hpc (high performance computing) cluster at OSU to compare run time and replicate results. *Section 5* includes the discussion. 
 
 # 2. Nearest Neighbor Gaussian Processes
 
@@ -149,8 +149,7 @@ where $\theta = \{ \sigma^2, \phi, \nu \}$ for Matérn covariance function (Finl
 
 A normal prior $N(\mu_{\beta}, V_{\beta})$ is used for $\beta$, inverse-Gamma priors are used for the spatial and noise variances $\sigma^2$ and $\tau^2$, and uniform priors are used for the range and smoothness parameters $1/\phi$ and $\nu$. 
 
-Interested readers are referred to *Section 2.1* of Finley et al. (2019) for more and **Algorithm 1** and **2** in the same section for algorithmic details, and note that the collapsed NNGP model is not implemented in the `spNNGP` package. 
-
+MCMC steps for updating $\{\beta, \theta, \tau^2 \}$ involves (1) updating $\{\theta, \tau^2\}$ through Metropolis Hastings, (2) updating $\beta$ through Gibb's sampler, and (3) repeating step (1) and (2) to obtain $N$ MCMC samples for $\{\beta, \theta, \tau^2 \}$. Interested readers are referred to **Algorithm 1** and **2** in *Section 2.1* of Finley et al. (2019) for additional algorithmic details. 
 
 ## 3.2. NNGP for the Response
 
@@ -170,11 +169,12 @@ where $\tilde{\Sigma}$ is the NNGP covariance matrix derived from $\Sigma = C(\t
 
 The dimension of the parameter space is reduced from $\mathcal{O}(n)$ to $\mathcal{O}(1)$, and the lower dimensional NNGP tends to have improved MCMC convergence (Finley et al., 2019, as cited in Finely et al., 2021). 
 
-Interested readers are referred to **Algorithm 3** and **4** in *Section 2.2* of Finley et al. (2019) for algorithmic details. 
+MCMC steps for updating $\{\beta, \theta, \tau^2 \}$ is similar to but less involved than those of the collapsed NNGP model. Interested readers are referred to **Algorithm 3** and **4** in *Section 2.2* of Finley et al. (2019) for additional algorithmic details. 
+
 
 ## 3.3. MCMC-Free Exact Bayesian Inference Using Conjugate NNGP 
 
-MCMC methods are commonly used to obtain approximate inference since the normalizing constant often involves high-dimensional integrals and is therefore hard to compute (Salakhutdinov, 2010). However, running MCMC methods such as the Gibbs’ sampler for several thousand iterations may still be very slow (Finley et al., 2019). 
+MCMC methods are commonly used to obtain approximate inference since the normalizing constant often involves high-dimensional integrals and is therefore hard to compute (Salakhutdinov, 2010). However, running MCMC methods such as the Gibbs’ sampler for several thousand iterations may be very slow (Finley et al., 2019). 
 
 The conjugate NNGP model offers MCMC-free exact posterior inference by fixing certain covariance parameters (i.e., $\phi$ and $\alpha$) in the response NNGP model (Finley et al., 2021). 
 
@@ -227,7 +227,8 @@ $$
 $$
 where $MVS_{t_{\kappa}} (B^{-1} b, (b / a) B^{-1})$ denotes the multivariate noncentral Student's $t$ distribution with degrees of freedom $\kappa$, mean $B^{-1} b$ and variance $b B^{-1} / (a - 1)$. The marginal posterior mean and variance for $\sigma^2$ are $b_\sigma^* / (a_\sigma^* - 1)$ and $b_\sigma^{2*} / {(a_\sigma^* - 1)}^2 (a_\sigma^* - 2)$, respectively. However, instead of sampling from the posterior distribution (i.e., sample $\sigma^2$ and then sample $\beta$ one-for-one for each $\sigma^2$ drawn), a fast evaluation of the marginal posterior distributions are implemented (Finley et al., 2019). 
 
-Interested readers are again referred to **Algorithm 5** in *Section 2.3* of Finley et al. (2019) for algorithmic details. 
+The conjugate NNGP model is MCMC-free, and it involves (1) fixing $\phi$ and $\alpha$ and splitting data into $K$ folds, (2) after removing the $k^{th}$ fold of the data, obtaining posterior means for $\beta$ and $\sigma^2$, (3) predicting posterior means of $y[S(k)]$, (4) calculating RMSPE (root mean square predictive error) over $K$ folds, and (5) performing cross-validation to choose $\phi$ and $\alpha$. Estimation involves repeating step (2) with ${(\phi_0, \alpha_0)}^T$ and the full data to get $(\beta, \sigma^2)| y$, whereas predication involves repeating step (3) with ${(\phi_0, \alpha_0)}^T$ and the full data to obtain mean and variance of $y(s_o) | y$ at a new location $s_0$. Interested readers are referred to **Algorithm 5** in *Section 2.3* of Finley et al. (2019) for additional algorithmic details. 
+
 
 ## 3.4. Fitted values, replicate data for model checking and evaluation, and predictions
 
@@ -245,18 +246,73 @@ Functions in the **R** package `spNNGP` is written in **C/C++** via **R**'s fore
 
 ## 4.1. Simulated data 
 
+The simulated data sets are simulated using the exampled codes provided in the **R** documentation page of the `spConjNNGP` function in the package `spNNGP`. 
+
+We follow the model in (1) and simulate data with varying sample size $n$ ($n = 10, 100, 1000, 10000, 20000, 30000$). For these data sets, only the conjugate NNGP model is considered. 
+
+We first note that the simulation part, rather than the model fitting part, takes much longer than expected, and we were not able to simulate pass $n = 30000$ on a personal laptop because of the dense and denser matrices that are involved. We also note that enabling **openMP** on a macOS laptop could take weeks, and even when being enabled, it did not provide much computational advantages. As a result, the results for this section were obtained running **R** locally on a personal laptop. 
+
+Even with these technical limitations, the run time for model fitting as a function of sample size is approximately linear, which is an improvement since the run time for GP usually grows in cubic time $\mathcal{O}(n^3)$ for data size $n$. 
+
+```{r, message = FALSE}
+library(here)
+library(tidyverse)
+library(pander)
+```
+
+```{r}
+df <- tibble(
+  n = c(2000, 5000, 10000, 15000, 20000, 30000), 
+  time = c(17.85282, 1.275811 * 60, 2.851186 * 60, 4.562708 * 60, 6.273452 * 60, 9.134544 * 60)
+) %>% mutate(
+  thread = rep(1, length(n))
+)
+```
+
+```{r, fig.align = 'center', out.width = "50%"}
+df %>% ggplot(aes(x = n, y = time)) + geom_point() + geom_line()
+```
+
 ## 4.2. Real data 
+
+The `BCEF` data set contains forest canopy heights (FCHs) from NASA Goddard's LiDAR Hyperspectral and Thermal (G-LiHT; Cook et al. 2013) Airborne Imager and percent tree cover (PTC; Hansen et al. 2013) over a subset of Bonanza Creek Experimental Forest in Alaska in Summer 2014. The `BCEF` data can be accessed from the **R** package `spNNGP`. 
+
+For this data set, a latent NNGP model, a response NNGP model, and a conjugate NNGP model are fitted, but the focus is again on the conjugate model. Since the data set is rather big ($n = 188,717$ locations) and **openMP** did not provide much computational advantages even when being enabled on a macOS laptop, the models are directly ran on a hpc cluster operated by OSU's College of Engineering. 
+
+We first note that compiling with **OpenMP** support and using $40$ thread(s), the MCMC-based latent model took about $30$ minutes to run, whereas the MCMC-based response model took a bit under $30$ minutes to run. The MCMC-free conjugate model took less than $2$ minutes to run. 
+
+We were able to obtain results that are similar to the paper results except for $\phi$, but we note that the $\phi$ in the table below is the $\phi$ in the fixed combination ($\phi$ and $\alpha$). 
+
+```{r}
+df.bcef.c <- readRDS(here("results", "df.bcef.c.rds"))
+df.bcef.c %>% pander()
+```
+
+The "optimal" combination (circled in the plot below) based on crps (continuous ranked probability score) metric is similar to the paper values. In our analysis, $\phi = 8.785714$ and $\alpha = 0.1$, but the paper does not provide specfic values. The general pattern of the crps plot is similar too. However, crps range of our plot differs. We suspect that the authors made an error since their crps value in Table 4 is $1.53$. 
+
+```{r, fig.align = 'center', out.width = "50%"}
+p_crps <- readRDS(here("results", "p_crps.rds"))
+p_crps 
+```
+
+Lastly, let us turn to model diagnostics. Again, `GPD` and `GRS` (alternative to `DIC` and `WAIC`) values are similar to paper values. 
+
+```{r}
+diag <- readRDS(here("results", "diag.rds"))
+diag %>% pander()
+```
 
 # 5. Discussion
 
-(1) This project reviews the NNGP models formation and  replicates results in Finley et al. (2021) using the `spNNGP` **R** package and hpc cluster at OSU. However, algorithmic details as well as where and how parallelization is used in each algorithm are not well explored but can be referred to Finley et al. (2019) for more. 
+(1) This project reviews the NNGP models formation and replicates results in Finley et al. (2021) using the `spNNGP` **R** package and hpc cluster at OSU. However, algorithmic details as well as where and how parallelization is used in each algorithm are not well explored but can be referred to Finley et al. (2019) for more. 
 
 (2) NNGP models assume Gaussian response. Exploiting the Pólya-Gamma data-augmented sampler of Polson et al. (2013), the latent NNGP model can be extended to model non-Gaussian (i.e. binary) response (Finley et al., 2021). Future study could look into extending the latent NNGP model or consider alternative models such as the GGP (generalized Gaussian process) model (Zilber & Katzfuss, 2021) via Vecchia-Laplace approximation or NNMP (nearest neighbor mixture process) model (Zheng, et al., 2022; Zheng, 2022) for other non-Gaussian response such as count, zero-inflated count, zero-inflated semicontinuous, etc. data. 
 
-(3) For the simulated data set, 
-, but run time as a function of sample size is approximately linear. 
+(3) For the simulated data sets, running the conjugate NNGP model on a personal laptop, we show that run time as a function of sample size is approximately linear. Future study should attempt to simulate larger data sets, run all NNGP models on a hpc cluster, and record and compare their run times. 
 
-(4) Since enabling **openMP** on a macOS laptop took weeks but it did not provide much computational advantages even when being enabled, for the real data set, we decide to run the models on a hpc cluster.   
+(4) For the real data set, running MCMC-based NNGP models on a hpc cluster, we were able to obtain results about or a little under 30 minutes. Running MCMC-free conjugate NNGP model took less than 2 minutes. This is a significant improvement since MCMC-based methods can take days up to weeks to run. Future study should compare the results of the MCMC-based NNGP models and investigate discrepancies of the results of the conjugate NNGP model. 
+
+
 
 \newpage 
 
