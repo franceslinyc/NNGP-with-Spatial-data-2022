@@ -1,0 +1,214 @@
+---
+title: "01-spConjNNGP_Random"
+author: "Frances Lin"
+date: "2022-12-05"
+output: pdf_document
+---
+
+## Load packages
+
+```{r}
+library(tidyverse)
+library(pander)
+library(here)
+```
+```{r}
+library(spNNGP)
+```
+## Load model object 
+
+```{r}
+bcef.c <- readRDS("../hpc/NNGP/real_data/bcef.c.rds")
+```
+
+## Summary output 
+
+```{r}
+summary(bcef.c)
+```
+
+### Put it in a df 
+
+```{r}
+names(bcef.c)
+```
+
+Notice that `theta.alpha` contains phi and alpha, instead of theta and alpha. Notice also that in `names(bcef.c)` there is no variance for neither phi and alpha. Need to come back! 
+
+```{r}
+# Create a df 
+df.bcef.c <- tibble(
+  "b_0" = c(bcef.c$beta.hat[1], bcef.c$beta.var[1, 1]), 
+  "b_PTC" = c(bcef.c$beta.hat[2], bcef.c$beta.var[2, 2]), 
+  "sigma_2" = c(bcef.c$sigma.sq.hat, bcef.c$sigma.sq.var), 
+  "phi" = c(bcef.c$theta.alpha[1], 0), 
+  "alpha" = c(bcef.c$theta.alpha[2], 0)
+)
+#df.bcef.c 
+```
+
+```{r}
+# Convert alpha to tau^2 OR
+df.bcef.c <- df.bcef.c %>% mutate(
+  "tau_2" = alpha * sigma_2
+)
+df.bcef.c
+```
+```{r}
+# Transpose a tibble following [this post](https://stackoverflow.com/questions/42790219/how-do-i-transpose-a-tibble-in-r)
+transpose_df <- function(df) {
+  t_df <- data.table::transpose(df)
+  colnames(t_df) <- rownames(df)
+  rownames(t_df) <- colnames(df)
+  t_df <- t_df %>%
+    tibble::rownames_to_column(.data = .) %>%
+    tibble::as_tibble(.)
+  return(t_df)
+}
+```
+
+```{r}
+df.bcef.c <- df.bcef.c %>% transpose_df()
+df.bcef.c #%>% pander()
+```
+
+```{r}
+# Create lb and ub using base R
+lb <- df.bcef.c$`1` - df.bcef.c$`2`
+ub <- df.bcef.c$`1` + df.bcef.c$`2`
+```
+
+```{r}
+# Recreate df using base R 
+bcef_small <- df.bcef.c[c(1,2)]
+df.bcef.c <- cbind(bcef_small, lb, ub)
+colnames(df.bcef.c) <- c("rowname", "estimate", "lb", "ub")
+```
+
+```{r}
+# Fix tau^2
+df.bcef.c[df.bcef.c$rowname == "sigma_2", c(2:4)] * df.bcef.c[df.bcef.c$rowname == "alpha", c(2)] -> df.bcef.c[df.bcef.c$rowname == "tau_2", c(2:4)]
+df.bcef.c #%>% pander
+```
+
+```{r}
+# Remove alpha 
+df.bcef.c[df.bcef.c$rowname == "sigma_2", c(2:4)] * df.bcef.c[df.bcef.c$rowname == "alpha", c(2)] -> df.bcef.c[df.bcef.c$rowname == "tau_2", c(2:4)]
+df.bcef.c.remove <- df.bcef.c[-5, ]
+df.bcef.c.remove
+```
+
+```{r}
+# Save output 
+saveRDS(df.bcef.c, here("results", "df.bcef.c.rds"))
+```
+
+
+Consider write the above functions into a class. 
+
+### $\beta$ 
+
+```{r}
+bcef.c$beta.hat
+```
+
+```{r}
+bcef.c$beta.var
+```
+
+### Theta and Alpha 
+
+```{r}
+# Extract theta & alpha 
+bcef.c$theta.alpha
+```
+```{r}
+# Just to make sure
+k.fold.scores.df <- bcef.c$k.fold.scores %>% as.data.frame() 
+k.fold.scores.df[which.min(k.fold.scores.df$crps), ]
+```
+
+### Plot theta.alpha
+
+Check to see whether $\phi$ in the package spNNGP paper is $\phi$ from Matern covariance function or $\phi$ in $R$ correlation function. Notice that $\phi$ in the the plot in the package spNNGP paper is not 4.93! 
+
+```{r}
+k.fold.scores <- bcef.c$k.fold.scores %>% as_tibble()
+k.fold.scores %>% head()
+```
+
+Differ a lot from the plot in the package spNNGP paper? crps range is still off. 
+
+```{r}
+k.fold.scores %>% ggplot(aes(x = alpha, y = phi, color = crps)) +
+  geom_point(size = 5) + 
+  geom_point(data = k.fold.scores %>% filter(crps == min(crps)), # Hello!
+             pch = 21,
+             size = 7,
+             colour = "purple") + 
+  scale_color_gradient(low = "yellow", high = "blue") +
+  theme(aspect.ratio=1) -> p_crps
+p_crps
+```
+
+```{r}
+# Save output 
+saveRDS(p_crps, here("results", "p_crps.rds"))
+```
+
+## Load model diagnostics 
+
+```{r}
+bcef.c.diag <- readRDS("../hpc/NNGP/real_data/bcef.c.diag.rds")
+#bcef.c.diag
+```
+
+```{r}
+names(bcef.c.diag)
+```
+`GPD` a data frame holding the values needed to compute the predictive criterion D = G + P defined by Gelfand and Ghosh (1998). The GPD data frame includes rows labeled G a goodness of fit, P a penalty term, and D the criterion (lower is better).
+
+Paper has 
+
+G = 6403563
+
+P = 3502314
+
+D = 9905877
+
+Still off but not terrible!
+
+```{r}
+bcef.c.diag$GP -> GP
+GP
+```
+
+`GRS` a scoring rule, see Equation 27 in Gneiting and Raftery (2007) for details, with larger values of GRS indicating better model fit.
+
+Paper has 
+
+GRS = -539539.6
+
+Still off but not terrible!
+
+```{r}
+bcef.c.diag$GRS -> GRS
+GRS
+```
+
+```{r}
+join = full_join(GP, GRS)
+diag <- tibble(
+  names = c("G", "P", "D", "GRS")
+) %>% mutate(
+  values = join$value
+)
+diag
+```
+
+```{r}
+# Save output 
+saveRDS(diag, here("results", "diag.rds"))
+```
+
+
