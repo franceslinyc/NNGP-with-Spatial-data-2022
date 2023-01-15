@@ -310,7 +310,7 @@ diag %>% pander()
 
 (3) For the simulated data sets, running the conjugate NNGP model on a personal laptop, we show that run time as a function of sample size is approximately linear. Future study should attempt to simulate larger data sets and run all NNGP models on a hpc cluster, and record and compare their run times. 
 
-(4) For the real data set, running MCMC-based NNGP models on a hpc cluster, we were able to obtain results about or a little under 30 minutes. Running MCMC-free conjugate NNGP model took less than 2 minutes. This is a significant improvement since MCMC-based methods can take days up to weeks to run, and, along with the MCMC-free model, they provide fast and scalable inference for big spatial data. Future study should compare the results of the MCMC-based NNGP models and investigate discrepancies in the results of the conjugate NNGP model. 
+(4) For the real data set, running MCMC-based NNGP models on a hpc cluster, we were able to obtain results about or a little under 30 minutes. Running MCMC-free conjugate NNGP model took less than 2 minutes. This is a significant improvement since MCMC-based methods can take days up to weeks to run, and they, along with the MCMC-free model, provide fast and scalable inference for big spatial data. Future study should compare the results of the MCMC-based NNGP models and investigate discrepancies in the results of the conjugate NNGP model. 
 
 
 
