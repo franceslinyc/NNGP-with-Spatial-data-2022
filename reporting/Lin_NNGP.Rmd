@@ -281,14 +281,14 @@ For this data set, a latent NNGP model, a response NNGP model, and a conjugate N
 
 We first note that compiling with **OpenMP** support and using $40$ thread(s), the MCMC-based latent model took about $30$ minutes to run, whereas the MCMC-based response model took a bit under $30$ minutes to run. The MCMC-free conjugate model took less than $2$ minutes to run. 
 
-We were able to obtain results that are similar to the paper results except for $\phi$, but we note that the $\phi$ in the table below is the $\phi$ in the fixed combination ($\phi$ and $\alpha$). 
+Randomness were involved since for this data set, $100,000$ out of the $188,717$ samples were selected to fit the model. However, we were able to obtain results that are similar to the paper results except for $\phi$, but we note that the $\phi$ in the table below is the $\phi$ in the fixed combination ($\phi$ and $\alpha$). 
 
 ```{r}
 df.bcef.c <- readRDS(here("results", "df.bcef.c.rds"))
 df.bcef.c %>% pander()
 ```
 
-The "optimal" combination (circled in the plot below) based on crps (continuous ranked probability score) metric is similar to the paper values. In our analysis, $\phi = 8.785714$ and $\alpha = 0.1$, but the paper does not provide specfic values. The general pattern of the crps plot is similar too. However, crps range of our plot differs. We suspect that the authors made an error since their crps value in Table 4 is $1.53$. 
+The "optimal" combination (circled in the plot below) based on crps (continuous ranked probability score) metric is similar to the paper values. In our analysis, $\phi = 8.785714$ and $\alpha = 0.1$, but the paper does not provide specfic values. The general pattern of the crps plot is similar too. However, crps range of our plot differs. We think that the authors may make a typo since their crps value in Table 4 is $1.53$. 
 
 ```{r, fig.align = 'center', out.width = "50%"}
 p_crps <- readRDS(here("results", "p_crps.rds"))
@@ -304,13 +304,13 @@ diag %>% pander()
 
 # 5. Discussion
 
-(1) This project reviews the NNGP models formation and replicates results in Finley et al. (2021) using the `spNNGP` **R** package and hpc cluster at OSU. However, algorithmic details as well as where and how parallelization is used in each algorithm are not well explored but can be referred to Finley et al. (2019) for more. 
+(1) This project reviews the NNGP models formation and replicates results in Finley et al. (2021) using the `spNNGP` **R** package and hpc cluster at OSU. However, algorithmic details as well as where and how parallelization is used in each algorithm are not well explored but can be referred to Finley et al. (2019) for more.
 
 (2) NNGP models assume Gaussian response. Exploiting the Pólya-Gamma data-augmented sampler of Polson et al. (2013), the latent NNGP model can be extended to model non-Gaussian (i.e. binary) response (Finley et al., 2021). Future study could look into extending the latent NNGP model or consider alternative models such as the GGP (generalized Gaussian process) model (Zilber & Katzfuss, 2021) via Vecchia-Laplace approximation or NNMP (nearest neighbor mixture process) model (Zheng, et al., 2022; Zheng, 2022) for other non-Gaussian response such as count, zero-inflated count, zero-inflated semicontinuous, etc. data. 
 
-(3) For the simulated data sets, running the conjugate NNGP model on a personal laptop, we show that run time as a function of sample size is approximately linear. Future study should attempt to simulate larger data sets, run all NNGP models on a hpc cluster, and record and compare their run times. 
+(3) For the simulated data sets, running the conjugate NNGP model on a personal laptop, we show that run time as a function of sample size is approximately linear. Future study should attempt to simulate larger data sets and run all NNGP models on a hpc cluster, and record and compare their run times. 
 
-(4) For the real data set, running MCMC-based NNGP models on a hpc cluster, we were able to obtain results about or a little under 30 minutes. Running MCMC-free conjugate NNGP model took less than 2 minutes. This is a significant improvement since MCMC-based methods can take days up to weeks to run. Future study should compare the results of the MCMC-based NNGP models and investigate discrepancies of the results of the conjugate NNGP model. 
+(4) For the real data set, running MCMC-based NNGP models on a hpc cluster, we were able to obtain results about or a little under 30 minutes. Running MCMC-free conjugate NNGP model took less than 2 minutes. This is a significant improvement since MCMC-based methods can take days up to weeks to run, and, along with the MCMC-free model, they provide fast and scalable inference for big spatial data. Future study should compare the results of the MCMC-based NNGP models and investigate discrepancies in the results of the conjugate NNGP model. 
 
 
 
