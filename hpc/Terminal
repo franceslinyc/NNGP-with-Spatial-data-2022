@@ -13,10 +13,6 @@ qsub fit_spNNGP_response_real.sh
 
 qsub fit_spNNGP_latent_real.sh
 
-qsub fit_spConjNNGP_real_set_seed.sh
-
-qsub fit_spConjNNGP_real_without_holdout.sh 
-
 qsub fit_spConjNNGP_real_random.sh
 
 
