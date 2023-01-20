@@ -1,8 +1,10 @@
 ---
-title: "NNGP Models with Spatial Examples of Simulated Data and Forest Canopy Heights" 
+title: "NNGP Models with Spatial Examples of Simulated Data and Forest Canopy Heights"
 author: "Frances Lin"
 date: "Dec 2022"
-output: pdf_document
+output:
+  pdf_document: default
+  word_document: default
 header-includes: \usepackage{setspace}\onehalfspacing
 ---
 
